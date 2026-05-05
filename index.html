@@ -27,6 +27,7 @@
             --warning: #f59e0b;
             --error: #ef4444;
             --gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --toast-bg: #1e293b;
         }
         body.light {
             --bg-primary: #f8fafc;
@@ -36,6 +37,7 @@
             --border: #e2e8f0;
             --text-primary: #0f172a;
             --text-secondary: #475569;
+            --toast-bg: #ffffff;
         }
         body {
             font-family: 'Inter', system-ui, sans-serif;
@@ -80,6 +82,7 @@
             display: flex;
             gap: 0.75rem;
             align-items: center;
+            flex-wrap: wrap;
         }
         .btn {
             background: var(--card-bg);
@@ -106,6 +109,17 @@
             background: transparent;
             border-color: var(--accent);
             color: var(--accent);
+        }
+        .btn-game {
+            background: var(--bg-primary);
+            border-color: var(--border);
+            padding: 0.3rem 0.8rem;
+            font-size: 0.75rem;
+        }
+        .btn-game.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
         }
         .main-grid {
             display: grid;
@@ -262,6 +276,46 @@
         .flashcard:hover {
             transform: scale(0.98);
         }
+        .game-options {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .quiz-option {
+            background: var(--bg-secondary);
+            padding: 0.5rem;
+            margin: 6px 0;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .quiz-option:hover { background: var(--accent); color: white; }
+        .matching-pairs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .matching-col {
+            flex: 1;
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 0.5rem;
+        }
+        .match-item {
+            background: var(--bg-primary);
+            margin: 6px;
+            padding: 8px;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            text-align: center;
+        }
+        .match-item.selected {
+            background: var(--accent);
+            color: white;
+        }
         .flashcard-buttons {
             display: flex;
             gap: 0.5rem;
@@ -277,10 +331,6 @@
             font-size: 0.7rem;
             cursor: pointer;
         }
-        .rate-btn:hover {
-            background: var(--accent);
-            color: white;
-        }
         .badge {
             background: var(--accent);
             padding: 2px 8px;
@@ -292,17 +342,6 @@
             border-radius: 1rem;
             padding: 0.8rem;
             margin-top: 0.5rem;
-        }
-        .score-bars {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin: 8px 0;
-        }
-        .score-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
         }
         .lang-toggle-btn {
             background: var(--accent);
@@ -352,23 +391,44 @@
             from { transform: scale(0.95); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toast {
+            background: var(--toast-bg);
+            color: var(--text-primary);
+            border-left: 4px solid var(--accent);
+            padding: 10px 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-size: 0.85rem;
+            max-width: 280px;
+            animation: slideIn 0.2s ease;
+        }
+        .toast.error { border-left-color: var(--error); }
+        .toast.success { border-left-color: var(--success); }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
         @media (max-width: 900px) {
             .main-grid { grid-template-columns: 1fr; }
             .app { height: auto; padding: 1rem; overflow: auto; }
             body { overflow: auto; }
             .message { max-width: 95%; }
         }
-        .typing-indicator { display: flex; gap: 4px; padding: 0.5rem; }
         .typing-indicator span { width: 8px; height: 8px; background: var(--text-secondary); border-radius: 50%; animation: bounce 1.2s infinite; }
         @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .loading-spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .review-header {
-            font-size: 0.8rem;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-        }
+        .due-count { background: var(--accent); border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; margin-left: 6px; }
     </style>
 </head>
 <body>
@@ -389,17 +449,7 @@
 
     <div class="main-grid">
         <div class="chat-panel">
-            <div class="chat-messages" id="chatMessages">
-                <div class="message assistant">
-                    <div class="message-avatar">👩‍🏫</div>
-                    <div class="message-bubble">
-                        ✨ <strong>Chào bạn! Tôi là giáo viên AI chuyên dạy tiếng Anh.</strong><br>
-                        • Sửa lỗi chi tiết, chấm điểm bài viết, giải thích ngữ pháp<br>
-                        • Gợi ý từ vựng nâng cao, lộ trình học theo trình độ (A1-C2)<br>
-                        • Hãy gửi câu hỏi, đoạn văn, hoặc bài luận của bạn!
-                    </div>
-                </div>
-            </div>
+            <div class="chat-messages" id="chatMessages"></div>
             <div class="chat-input-area">
                 <textarea id="userInput" rows="1" class="chat-input" placeholder="Nhập câu hỏi / bài viết tiếng Anh..."></textarea>
                 <button id="sendBtn" class="btn btn-primary">📤 Gửi</button>
@@ -420,14 +470,20 @@
                 <button id="saveVocabBtn" class="btn" style="width:100%; margin-top:8px;">⭐ Lưu từ đã chọn</button>
             </div>
             <div class="card">
-                <h3>🃏 Flashcard Ôn tập (SM2)</h3>
+                <h3>🃏 Ôn tập thông minh <span id="dueBadge" class="due-count">0</span></h3>
                 <div id="savedWordsContainer" class="vocab-list" style="max-height:150px;"></div>
-                <button id="reviewFlashcardBtn" class="btn" style="width:100%; margin-top:8px;">📖 Ôn tập thông minh</button>
+                <div class="game-options" id="gameModeSelector">
+                    <button class="btn-game" data-mode="flashcard">📇 Flashcard</button>
+                    <button class="btn-game" data-mode="quiz">❓ Trắc nghiệm</button>
+                    <button class="btn-game" data-mode="writing">✍️ Viết lại</button>
+                    <button class="btn-game" data-mode="matching">🔗 Ghép đôi</button>
+                </div>
+                <button id="startGameBtn" class="btn btn-primary" style="width:100%; margin-top:5px;">🎮 Bắt đầu ôn tập</button>
                 <div id="flashcardZone" class="flashcard-area" style="display:none;">
                     <div class="review-header" id="reviewStats"></div>
-                    <div id="flashcardInner" class="flashcard">Chưa có thẻ ôn tập</div>
-                    <div class="flashcard-buttons" id="flashcardButtons"></div>
-                    <button id="closeFlashcardBtn" class="btn" style="margin-top:8px; width:100%;">🔒 Đóng ôn tập</button>
+                    <div id="gameContent" class="flashcard">Chọn chế độ và nhấn "Bắt đầu"</div>
+                    <div class="flashcard-buttons" id="gameButtons"></div>
+                    <button id="closeFlashcardBtn" class="btn" style="margin-top:8px; width:100%;">🔒 Đóng</button>
                 </div>
             </div>
             <div class="card">
@@ -443,10 +499,7 @@
 <!-- MODAL TEST TRÌNH ĐỘ -->
 <div id="levelTestModal" class="modal-overlay">
     <div class="modal-container">
-        <div class="modal-header">
-            <h2>📋 Đánh giá trình độ CEFR</h2>
-            <button class="modal-close" id="closeModalBtn">&times;</button>
-        </div>
+        <div class="modal-header"><h2>📋 Đánh giá trình độ CEFR</h2><button class="modal-close" id="closeModalBtn">&times;</button></div>
         <div class="modal-body" id="modalBody"><div class="loading-spinner"></div></div>
         <div class="modal-footer">
             <button id="skipTestBtn" class="btn">⏭️ Bỏ qua</button>
@@ -455,177 +508,73 @@
     </div>
 </div>
 
+<div class="toast-container" id="toastContainer"></div>
+
 <script>
     // ==================== CORE CONFIG ====================
     let OPENROUTER_KEY = localStorage.getItem('openrouter_key');
     if (!OPENROUTER_KEY) {
         OPENROUTER_KEY = prompt('🔑 Nhập OpenRouter API Key (lấy tại openrouter.ai):', '');
-        if (OPENROUTER_KEY) localStorage.setItem('openrouter_key', OPENROUTER_KEY);
+        if (OPENROUTER_KEY && OPENROUTER_KEY.trim()) localStorage.setItem('openrouter_key', OPENROUTER_KEY);
     }
     
     let savedWords = [];
     let currentVocab = [];
     let userLevel = localStorage.getItem('user_cefr') || 'B1';
+    let chatHistory = JSON.parse(localStorage.getItem('elsa_chat_history') || '[]');
     let currentEssayData = null;
     let currentEssayLang = 'vi';
+    let flashcards = [];
     
-    // Flashcard SM2 state
-    let flashcards = [];          // will be populated from savedWords with SM2 fields
-    let dueCards = [];
-    let currentCardIndex = 0;
-    let isShowingBack = false;
+    // Game state
+    let currentGameMode = 'flashcard';
+    let gameCards = [];
+    let currentGameIndex = 0;
+    let gameUserAnswers = [];
+    let matchingSelectedSide = null;
+    let writingInput = null;
     
-    // === BIẾN TEST TRÌNH ĐỘ ===
-    let currentQuestions = [];
-    let userAnswers = [];
-    const QUIZAPI_KEY = 'qa_sk_23a1ee7295fc4041dcf66d84bb21c7f52ac05db6';
-    
-    async function fetchRealQuestions() {
-        const difficultyMap = { 'A1':'Easy', 'A2':'Easy', 'B1':'Medium', 'B2':'Medium', 'C1':'Hard', 'C2':'Hard' };
-        const difficulty = difficultyMap[userLevel] || 'Medium';
-        const url = `https://quizapi.io/api/v1/questions?apiKey=${QUIZAPI_KEY}&category=english&difficulty=${difficulty}&limit=8`;
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
-            if (data && Array.isArray(data) && data.length > 0) {
-                currentQuestions = data.map(q => {
-                    const options = [];
-                    if (q.answers.answer_a) options.push(q.answers.answer_a);
-                    if (q.answers.answer_b) options.push(q.answers.answer_b);
-                    if (q.answers.answer_c) options.push(q.answers.answer_c);
-                    if (q.answers.answer_d) options.push(q.answers.answer_d);
-                    let correctValue = '';
-                    if (q.correct_answer === 'answer_a') correctValue = q.answers.answer_a;
-                    else if (q.correct_answer === 'answer_b') correctValue = q.answers.answer_b;
-                    else if (q.correct_answer === 'answer_c') correctValue = q.answers.answer_c;
-                    else if (q.correct_answer === 'answer_d') correctValue = q.answers.answer_d;
-                    return { text: q.question, options, correct: correctValue, level: difficulty === 'Easy' ? 'A2' : (difficulty === 'Medium' ? 'B1' : 'C1') };
-                }).filter(q => q.options.length >= 2);
-                if (currentQuestions.length >= 4) return true;
-            }
-            currentQuestions = getFallbackQuestions();
-            return false;
-        } catch (error) {
-            currentQuestions = getFallbackQuestions();
-            return false;
-        }
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerText = message;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     }
+    function isApiKeyValid() { return OPENROUTER_KEY && OPENROUTER_KEY.trim().length > 0; }
     
-    function getFallbackQuestions() {
-        return [
-            { text: "She ________ to the cinema every Sunday.", options: ["go", "goes", "going", "went"], correct: "goes", level: "A2" },
-            { text: "If I had known about the party, I ________ you.", options: ["will tell", "would tell", "would have told", "told"], correct: "would have told", level: "B2" },
-            { text: "The project was ________ difficult that nobody could finish it.", options: ["so", "such", "very", "too"], correct: "so", level: "B1" },
-            { text: "By the time we arrive, the film ________ already ________.", options: ["will / start", "has / started", "had / started", "will have / started"], correct: "will have / started", level: "B2" },
-            { text: "He is known ________ being one of the best doctors in the city.", options: ["as", "for", "to", "by"], correct: "for", level: "B1" },
-            { text: "She advised me ________ the job offer immediately.", options: ["accept", "to accept", "accepting", "accepted"], correct: "to accept", level: "B1" },
-            { text: "Not until the 20th century ________ significant changes in global communication.", options: ["did occur", "occurred", "there occurred", "did there occur"], correct: "did there occur", level: "C1" },
-            { text: "The CEO, along with his assistants, ________ attending the conference tomorrow.", options: ["is", "are", "were", "have"], correct: "is", level: "B2" }
-        ];
-    }
-    
-    async function showLevelTestModal() {
-        const modal = document.getElementById('levelTestModal');
-        const modalBody = document.getElementById('modalBody');
-        modal.classList.add('active');
-        modalBody.innerHTML = `<div style="text-align:center; padding:2rem;"><div class="loading-spinner"></div><p>Đang tải đề thi thực tế từ ngân hàng câu hỏi...</p></div>`;
-        await fetchRealQuestions();
-        renderTestQuestions();
-    }
-    
-    function renderTestQuestions() {
-        const container = document.getElementById('modalBody');
+    // ==================== CHAT PERSISTENCE ====================
+    function saveChatHistory() { localStorage.setItem('elsa_chat_history', JSON.stringify(chatHistory)); }
+    function loadChatHistory() {
+        const container = document.getElementById('chatMessages');
         container.innerHTML = '';
-        userAnswers = new Array(currentQuestions.length).fill(null);
-        currentQuestions.forEach((q, idx) => {
-            const questionDiv = document.createElement('div');
-            questionDiv.className = 'question-item';
-            questionDiv.innerHTML = `<div class="question-text">${idx+1}. ${q.text}</div><div class="options" data-qidx="${idx}">${q.options.map(opt => `<label class="option" data-opt="${opt}"><input type="radio" name="q${idx}" value="${opt}"> <span>${opt}</span></label>`).join('')}</div>`;
-            container.appendChild(questionDiv);
+        if (chatHistory.length === 0) {
+            container.innerHTML = `<div class="message assistant"><div class="message-avatar">👩‍🏫</div><div class="message-bubble">✨ <strong>Chào bạn! Tôi là giáo viên AI chuyên dạy tiếng Anh.</strong><br>• Sửa lỗi chi tiết, chấm điểm bài viết, giải thích ngữ pháp<br>• Gợi ý từ vựng nâng cao, lộ trình học theo trình độ (A1-C2)<br>• Hãy gửi câu hỏi, đoạn văn, hoặc bài luận của bạn!</div></div>`;
+            return;
+        }
+        chatHistory.forEach(msg => {
+            const div = document.createElement('div');
+            div.className = `message ${msg.role}`;
+            div.innerHTML = `<div class="message-avatar">${msg.role==='user'?'👤':'👩‍🏫'}</div><div class="message-bubble">${marked.parse(msg.content)}</div>`;
+            container.appendChild(div);
         });
-        document.querySelectorAll('.option').forEach(optEl => {
-            const radio = optEl.querySelector('input');
-            radio.addEventListener('change', (e) => {
-                const qidx = parseInt(optEl.closest('.options').dataset.qidx);
-                userAnswers[qidx] = e.target.value;
-                document.querySelectorAll(`.options[data-qidx="${qidx}"] .option`).forEach(el => el.classList.remove('selected'));
-                optEl.classList.add('selected');
-            });
-        });
+        container.scrollTop = container.scrollHeight;
     }
+    function addMessage(role, content) {
+        chatHistory.push({ role, content, timestamp: Date.now() });
+        if (chatHistory.length > 100) chatHistory.shift();
+        saveChatHistory();
+        const container = document.getElementById('chatMessages');
+        const div = document.createElement('div');
+        div.className = `message ${role}`;
+        div.innerHTML = `<div class="message-avatar">${role==='user'?'👤':'👩‍🏫'}</div><div class="message-bubble">${marked.parse(content)}</div>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+    function clearChatHistory() { chatHistory = []; saveChatHistory(); loadChatHistory(); showToast('🧹 Đã xóa lịch sử chat', 'success'); }
     
-    function calculateResult() {
-        let score = 0;
-        currentQuestions.forEach((q, idx) => { if (userAnswers[idx] === q.correct) score++; });
-        let percentage = (score / currentQuestions.length) * 100;
-        let newLevel = "A2";
-        if (percentage >= 90) newLevel = "C1";
-        else if (percentage >= 75) newLevel = "B2";
-        else if (percentage >= 55) newLevel = "B1";
-        else if (percentage >= 35) newLevel = "A2";
-        else newLevel = "A1";
-        const advice = { A1: "🌟 Người mới bắt đầu. Hãy tập trung vào từ vựng cơ bản.", A2: "📘 Sơ cấp. Luyện thêm thì quá khứ và tương lai.", B1: "🎯 Trung cấp. Cải thiện câu điều kiện, bị động.", B2: "⚡ Trung cấp khá. Tập trung thành ngữ, viết luận.", C1: "🏆 Cao cấp. Luyện thi học thuật." };
-        const container = document.getElementById('modalBody');
-        container.innerHTML = `<div class="result-area"><h3>📊 Kết quả</h3><p>Đúng <strong>${score}/${currentQuestions.length}</strong> câu.</p><p>🎯 Trình độ đề xuất: <strong class="badge" style="font-size:1.2rem;">${newLevel}</strong></p><p>${advice[newLevel] || "Tiếp tục ôn luyện!"}</p><button id="acceptLevelBtn" class="btn btn-primary">✅ Lưu trình độ & Đóng</button></div>`;
-        document.getElementById('acceptLevelBtn')?.addEventListener('click', () => { userLevel = newLevel; localStorage.setItem('user_cefr', userLevel); updateLevelUI(); closeModal(); canvasConfetti({ particleCount: 100, spread: 60 }); });
-    }
-    function closeModal() { document.getElementById('levelTestModal').classList.remove('active'); }
-    
-    // ==================== AI + ESSAY ====================
-    async function callAI(systemPrompt, userMessage, maxTokens=1500) {
-        if (!OPENROUTER_KEY) throw new Error('Missing API key');
-        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${OPENROUTER_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'openai/gpt-4o-mini', messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMessage }], temperature: 0.4, max_tokens: maxTokens })
-        });
-        if (!res.ok) throw new Error(await res.text());
-        return (await res.json()).choices[0].message.content;
-    }
-    
-    async function evaluateEssay(essay) {
-        const systemPrompt = `Bạn là giám khảo IELTS/TOEFL. Chấm bài viết tiếng Anh thang điểm 10, chia mục. Trả về JSON: totalScore, grammar, vocab, cohesion, task, feedback_vi, feedback_en, improvedVersion_en (bắt buộc bằng tiếng Anh).`;
-        const resp = await callAI(systemPrompt, essay, 1600);
-        try {
-            let clean = resp.replace(/```json/g, '').replace(/```/g, '').trim();
-            const parsed = JSON.parse(clean);
-            return {
-                totalScore: parsed.totalScore || 0,
-                grammar: parsed.grammar || 0,
-                vocab: parsed.vocab || 0,
-                cohesion: parsed.cohesion || 0,
-                task: parsed.task || 0,
-                feedback_vi: parsed.feedback_vi || "Không có nhận xét.",
-                feedback_en: parsed.feedback_en || "No feedback.",
-                improvedVersion_en: parsed.improvedVersion_en || "No improved version."
-            };
-        } catch(e) { return { totalScore: 0, grammar:0, vocab:0, cohesion:0, task:0, feedback_vi: "Lỗi", feedback_en: "Error", improvedVersion_en: "" }; }
-    }
-    
-    async function handleEssayScore() {
-        const essay = document.getElementById('essayInput').value.trim();
-        if (!essay) return alert('📝 Hãy nhập bài viết tiếng Anh.');
-        const resultDiv = document.getElementById('essayResult');
-        resultDiv.innerHTML = '<div class="loading-spinner"></div><p>Đang phân tích...</p>';
-        try {
-            const evalData = await evaluateEssay(essay);
-            currentEssayData = evalData;
-            currentEssayLang = 'vi';
-            renderEssayResult();
-        } catch(e) { resultDiv.innerHTML = `Lỗi: ${e.message}`; }
-    }
-    function renderEssayResult() {
-        if (!currentEssayData) return;
-        const data = currentEssayData;
-        const isVi = currentEssayLang === 'vi';
-        const feedback = isVi ? data.feedback_vi : data.feedback_en;
-        const html = `<div class="score-card"><strong>📊 Điểm: ${data.totalScore}/10</strong><div class="score-bars"><div>Grammar ${data.grammar}/2.5</div><div>Vocab ${data.vocab}/2.5</div><div>Cohesion ${data.cohesion}/2.5</div><div>Task ${data.task}/2.5</div></div><div>💬 ${marked.parse(feedback)}</div><div><strong>✏️ Improved Version (English):</strong><br>${marked.parse(data.improvedVersion_en)}</div><button id="toggleEssayLang" class="lang-toggle-btn">🔄 ${isVi ? '🇬🇧 English' : '🇻🇳 Tiếng Việt'}</button></div>`;
-        document.getElementById('essayResult').innerHTML = html;
-        document.getElementById('toggleEssayLang')?.addEventListener('click', () => { currentEssayLang = currentEssayLang === 'vi' ? 'en' : 'vi'; renderEssayResult(); });
-    }
-    
-    // ==================== FLASHCARD SM2 ====================
+    // ==================== FLASHCARD & SM2 ====================
     function initFlashcardData() {
         flashcards = savedWords.map(word => ({
             id: word.word,
@@ -634,12 +583,12 @@
             example: word.example || "",
             interval: word.interval || 0,
             ease: word.ease || 2.5,
-            nextReview: word.nextReview || Date.now()  // due now if not set
+            nextReview: word.nextReview || Date.now()
         }));
         saveFlashcardData();
+        updateDueBadge();
     }
     function saveFlashcardData() {
-        // Update savedWords with new SM2 fields
         flashcards.forEach(f => {
             const idx = savedWords.findIndex(w => w.word === f.word);
             if (idx !== -1) {
@@ -652,104 +601,208 @@
     }
     function getDueCards() {
         const now = Date.now();
-        return flashcards.filter(card => card.nextReview <= now).sort((a,b) => a.nextReview - b.nextReview);
+        return flashcards.filter(card => card.nextReview <= now);
+    }
+    function updateDueBadge() {
+        const due = getDueCards().length;
+        document.getElementById('dueBadge').innerText = due > 0 ? due : '0';
     }
     function updateCardSchedule(card, quality) {
-        // quality: 0=Again, 1=Hard, 2=Good, 3=Easy
         let { interval, ease } = card;
-        if (quality === 0) { // Again
-            interval = 1; // 1 day
-            ease = Math.max(1.3, ease - 0.2);
-        } else if (quality === 1) { // Hard
-            interval = Math.max(1, interval * 1.2);
-            ease = Math.max(1.3, ease - 0.15);
-        } else if (quality === 2) { // Good
-            if (interval === 0) interval = 1;
-            else interval = interval * ease;
-            ease = ease + 0.05;
-        } else if (quality === 3) { // Easy
-            if (interval === 0) interval = 2;
-            else interval = interval * ease * 1.3;
-            ease = ease + 0.15;
-        }
+        if (quality === 0) { interval = 1; ease = Math.max(1.3, ease - 0.2); }
+        else if (quality === 1) { interval = Math.max(1, interval * 1.2); ease = Math.max(1.3, ease - 0.15); }
+        else if (quality === 2) { if (interval === 0) interval = 1; else interval = interval * ease; ease = ease + 0.05; }
+        else if (quality === 3) { if (interval === 0) interval = 2; else interval = interval * ease * 1.3; ease = ease + 0.15; }
         interval = Math.round(interval);
         if (interval < 1) interval = 1;
         card.interval = interval;
         card.ease = Math.min(2.5, ease);
         card.nextReview = Date.now() + interval * 24 * 60 * 60 * 1000;
         saveFlashcardData();
-    }
-    function startReview() {
-        dueCards = getDueCards();
-        if (dueCards.length === 0) {
-            document.getElementById('flashcardZone').style.display = 'block';
-            document.getElementById('flashcardInner').innerHTML = '🎉 Chúc mừng! Hiện không có thẻ nào cần ôn tập. Hãy thêm từ mới nhé.';
-            document.getElementById('flashcardButtons').innerHTML = '';
-            document.getElementById('reviewStats').innerHTML = `📚 0 từ cần ôn`;
-            return;
-        }
-        currentCardIndex = 0;
-        isShowingBack = false;
-        document.getElementById('flashcardZone').style.display = 'block';
-        renderCurrentFlashcard();
-    }
-    function renderCurrentFlashcard() {
-        if (currentCardIndex >= dueCards.length) {
-            document.getElementById('flashcardInner').innerHTML = '✅ Hoàn thành! Bạn đã ôn hết các từ cần học.';
-            document.getElementById('flashcardButtons').innerHTML = '';
-            document.getElementById('reviewStats').innerHTML = `🎉 Hoàn thành ${dueCards.length} thẻ!`;
-            return;
-        }
-        const card = dueCards[currentCardIndex];
-        const stats = `📋 Thẻ ${currentCardIndex+1}/${dueCards.length} • ${dueCards.length - currentCardIndex - 1} còn lại`;
-        document.getElementById('reviewStats').innerHTML = stats;
-        if (!isShowingBack) {
-            document.getElementById('flashcardInner').innerHTML = `<div><strong>📖 ${card.word}</strong><br><span style="font-size:0.7rem;">👆 Nhấn để xem nghĩa</span></div>`;
-        } else {
-            let meaningHtml = `<div><strong>${card.word}</strong><br>📘 ${card.meaning || 'Chưa có nghĩa'}`;
-            if (card.example) meaningHtml += `<br><span style="font-size:0.7rem;">💡 ${card.example}</span>`;
-            meaningHtml += `</div>`;
-            document.getElementById('flashcardInner').innerHTML = meaningHtml;
-        }
-        // Buttons appear only on back side
-        if (isShowingBack) {
-            document.getElementById('flashcardButtons').innerHTML = `
-                <button class="rate-btn" data-quality="0">🔴 Again (0)</button>
-                <button class="rate-btn" data-quality="1">🟠 Hard (1)</button>
-                <button class="rate-btn" data-quality="2">🟢 Good (2)</button>
-                <button class="rate-btn" data-quality="3">🔵 Easy (3)</button>
-            `;
-            document.querySelectorAll('.rate-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const quality = parseInt(btn.dataset.quality);
-                    updateCardSchedule(card, quality);
-                    currentCardIndex++;
-                    isShowingBack = false;
-                    renderCurrentFlashcard();
-                });
-            });
-        } else {
-            document.getElementById('flashcardButtons').innerHTML = `<button class="btn" id="flipCardBtn">🔄 Lật thẻ</button>`;
-            document.getElementById('flipCardBtn').addEventListener('click', () => { isShowingBack = true; renderCurrentFlashcard(); });
-        }
-    }
-    function closeFlashcardReview() {
-        document.getElementById('flashcardZone').style.display = 'none';
-        dueCards = [];
-        currentCardIndex = 0;
-        renderSavedWords(); // refresh list
+        updateDueBadge();
     }
     
-    // ==================== TỪ VỰNG & CHAT ====================
-    async function getExpertTeacherResponse(userText, level) {
-        const system = `Bạn là giáo viên tiếng Anh chuyên nghiệp, phản hồi bằng tiếng Việt, sửa lỗi, cho từ vựng.`;
-        return await callAI(system, userText, 1600);
+    // ==================== GAME MODES ====================
+    function startGame() {
+        const due = getDueCards();
+        if (due.length === 0) {
+            showToast('🎉 Không có từ cần ôn! Hãy thêm từ mới.', 'info');
+            return;
+        }
+        gameCards = [...due];
+        currentGameIndex = 0;
+        gameUserAnswers = [];
+        matchingSelectedSide = null;
+        document.getElementById('flashcardZone').style.display = 'block';
+        renderGame();
     }
-    async function extractKeyVocabulary(text) {
-        const system = `Trích xuất 5-6 từ vựng, trả về JSON array: [{"word":"...","meaning":"nghĩa tiếng Việt","pos":"n/v/adj","example":"..."}]`;
-        const raw = await callAI(system, text, 800);
-        try { let clean = raw.replace(/```json/g,'').replace(/```/g,'').trim(); return JSON.parse(clean); } catch(e) { return []; }
+    
+    function renderGame() {
+        if (currentGameIndex >= gameCards.length) {
+            document.getElementById('gameContent').innerHTML = '✅ Hoàn thành! Bạn đã ôn hết các từ.';
+            document.getElementById('gameButtons').innerHTML = '';
+            document.getElementById('reviewStats').innerHTML = `🎉 Hoàn thành ${gameCards.length} thẻ!`;
+            updateDueBadge();
+            return;
+        }
+        const card = gameCards[currentGameIndex];
+        document.getElementById('reviewStats').innerHTML = `📋 ${currentGameMode === 'flashcard' ? 'Flashcard' : currentGameMode === 'quiz' ? 'Trắc nghiệm' : currentGameMode === 'writing' ? 'Viết lại' : 'Ghép đôi'} • ${currentGameIndex+1}/${gameCards.length}`;
+        
+        if (currentGameMode === 'flashcard') renderFlashcard(card);
+        else if (currentGameMode === 'quiz') renderQuiz(card);
+        else if (currentGameMode === 'writing') renderWriting(card);
+        else if (currentGameMode === 'matching') renderMatching();
     }
+    
+    function renderFlashcard(card) {
+        let showingBack = false;
+        const contentDiv = document.getElementById('gameContent');
+        const buttonsDiv = document.getElementById('gameButtons');
+        contentDiv.innerHTML = `<div><strong>📖 ${card.word}</strong><br><span style="font-size:0.7rem;">👆 Nhấn để xem nghĩa</span></div>`;
+        contentDiv.style.cursor = 'pointer';
+        contentDiv.onclick = () => {
+            if (!showingBack) {
+                contentDiv.innerHTML = `<div><strong>${card.word}</strong><br>📘 ${card.meaning || 'Chưa có nghĩa'}${card.example ? `<br><span style="font-size:0.7rem;">💡 ${card.example}</span>` : ''}</div>`;
+                showingBack = true;
+                buttonsDiv.innerHTML = `
+                    <button class="rate-btn" data-quality="0">🔴 Again</button>
+                    <button class="rate-btn" data-quality="1">🟠 Hard</button>
+                    <button class="rate-btn" data-quality="2">🟢 Good</button>
+                    <button class="rate-btn" data-quality="3">🔵 Easy</button>
+                `;
+                document.querySelectorAll('.rate-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const quality = parseInt(btn.dataset.quality);
+                        updateCardSchedule(card, quality);
+                        currentGameIndex++;
+                        renderGame();
+                    });
+                });
+            }
+        };
+        buttonsDiv.innerHTML = '';
+    }
+    
+    function renderQuiz(card) {
+        let otherMeanings = flashcards.filter(c => c.word !== card.word).map(c => c.meaning).filter(m => m && m !== card.meaning);
+        let options = [card.meaning];
+        while (options.length < 4 && otherMeanings.length) {
+            let rand = otherMeanings[Math.floor(Math.random() * otherMeanings.length)];
+            if (!options.includes(rand)) options.push(rand);
+            otherMeanings = otherMeanings.filter(m => m !== rand);
+        }
+        if (options.length < 4) options.push("(Chưa có nghĩa khác)", "(Chưa có nghĩa khác)");
+        options = options.sort(() => Math.random() - 0.5);
+        
+        const contentDiv = document.getElementById('gameContent');
+        contentDiv.innerHTML = `<div><strong>❓ Từ: "${card.word}"</strong><br>Chọn nghĩa đúng:</div><div>${options.map(opt => `<div class="quiz-option" data-opt="${opt}">${opt}</div>`).join('')}</div>`;
+        document.querySelectorAll('.quiz-option').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const selected = e.currentTarget.dataset.opt;
+                const isCorrect = (selected === card.meaning);
+                if (isCorrect) {
+                    showToast('✅ Chính xác!', 'success');
+                    updateCardSchedule(card, 2);
+                    currentGameIndex++;
+                    renderGame();
+                } else {
+                    showToast(`❌ Sai! Đáp án đúng: ${card.meaning}`, 'error');
+                    updateCardSchedule(card, 0);
+                    currentGameIndex++;
+                    renderGame();
+                }
+            });
+        });
+        document.getElementById('gameButtons').innerHTML = '';
+    }
+    
+    function renderWriting(card) {
+        const contentDiv = document.getElementById('gameContent');
+        contentDiv.innerHTML = `<div><strong>✍️ Viết từ tiếng Anh cho nghĩa:</strong><br>📘 ${card.meaning}</div><input type="text" id="writingInput" style="width:90%; margin-top:10px; padding:8px; border-radius:20px; background:var(--bg-primary); color:var(--text-primary); border:1px solid var(--border);" placeholder="Nhập từ...">`;
+        const buttonsDiv = document.getElementById('gameButtons');
+        buttonsDiv.innerHTML = `<button id="submitWritingBtn" class="btn btn-primary">Kiểm tra</button>`;
+        document.getElementById('submitWritingBtn').addEventListener('click', () => {
+            const userAnswer = document.getElementById('writingInput').value.trim().toLowerCase();
+            const correct = card.word.toLowerCase();
+            if (userAnswer === correct) {
+                showToast('✅ Chính xác!', 'success');
+                updateCardSchedule(card, 2);
+                currentGameIndex++;
+                renderGame();
+            } else {
+                showToast(`❌ Sai! Đáp án: ${card.word}`, 'error');
+                updateCardSchedule(card, 0);
+                currentGameIndex++;
+                renderGame();
+            }
+        });
+    }
+    
+    function renderMatching() {
+        let remaining = gameCards.slice(currentGameIndex);
+        let matchSet = remaining.slice(0, Math.min(6, remaining.length));
+        if (matchSet.length < 2) matchSet = gameCards.slice(-4);
+        const words = matchSet.map(c => ({ word: c.word, meaning: c.meaning }));
+        let leftItems = words.map(w => ({ type: 'word', content: w.word, id: w.word }));
+        let rightItems = words.map(w => ({ type: 'meaning', content: w.meaning, id: w.word }));
+        leftItems = leftItems.sort(() => Math.random() - 0.5);
+        rightItems = rightItems.sort(() => Math.random() - 0.5);
+        
+        let selectedLeft = null;
+        let selectedRight = null;
+        
+        const contentDiv = document.getElementById('gameContent');
+        function renderMatchUI() {
+            contentDiv.innerHTML = `<div class="matching-pairs"><div class="matching-col"><h4>Từ vựng</h4>${leftItems.map(item => `<div class="match-item" data-side="left" data-id="${item.id}">${item.content}</div>`).join('')}</div><div class="matching-col"><h4>Nghĩa</h4>${rightItems.map(item => `<div class="match-item" data-side="right" data-id="${item.id}">${item.content}</div>`).join('')}</div></div>`;
+            document.querySelectorAll('.match-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    const side = el.dataset.side;
+                    const id = el.dataset.id;
+                    if (side === 'left') {
+                        if (selectedLeft) document.querySelector(`.match-item[data-side='left'][data-id='${selectedLeft}']`).classList.remove('selected');
+                        selectedLeft = id;
+                        el.classList.add('selected');
+                    } else {
+                        if (selectedRight) document.querySelector(`.match-item[data-side='right'][data-id='${selectedRight}']`).classList.remove('selected');
+                        selectedRight = id;
+                        el.classList.add('selected');
+                    }
+                    if (selectedLeft && selectedRight) {
+                        const correct = (selectedLeft === selectedRight);
+                        const card = matchSet.find(c => c.word === selectedLeft);
+                        if (correct) {
+                            showToast('✅ Ghép đúng!', 'success');
+                            updateCardSchedule(card, 2);
+                            const idx = gameCards.findIndex(c => c.word === card.word);
+                            if (idx !== -1) gameCards.splice(idx, 1);
+                            currentGameIndex = 0;
+                            renderGame();
+                        } else {
+                            showToast(`❌ Sai! "${selectedLeft}" không khớp với "${rightItems.find(r=>r.id===selectedRight)?.content}"`, 'error');
+                            updateCardSchedule(card, 0);
+                            selectedLeft = null;
+                            selectedRight = null;
+                            renderMatchUI();
+                        }
+                    }
+                });
+            });
+        }
+        renderMatchUI();
+        document.getElementById('gameButtons').innerHTML = `<button id="skipMatchBtn" class="btn">⏩ Bỏ qua cặp</button>`;
+        document.getElementById('skipMatchBtn').addEventListener('click', () => {
+            currentGameIndex++;
+            renderGame();
+        });
+    }
+    
+    function closeGame() {
+        document.getElementById('flashcardZone').style.display = 'none';
+        gameCards = [];
+        currentGameIndex = 0;
+    }
+    
+    // ==================== TỪ VỰNG ====================
     function saveWordToCard(wordObj) {
         if (!wordObj.word) return;
         let existing = savedWords.find(w => w.word === wordObj.word);
@@ -764,25 +817,137 @@
         }
         localStorage.setItem('elsa_saved_words', JSON.stringify(savedWords));
         renderSavedWords();
-        initFlashcardData(); // refresh flashcards array
+        initFlashcardData();
+        showToast(`✅ Đã lưu từ "${wordObj.word}"`, 'success');
     }
     function renderSavedWords() {
         const container = document.getElementById('savedWordsContainer');
         if (!savedWords.length) { container.innerHTML = '<div>Chưa có từ nào</div>'; return; }
         container.innerHTML = savedWords.map((w, idx) => `<div style="display:flex; justify-content:space-between; background:var(--bg-primary); padding:6px; border-radius:8px; margin-bottom:4px;"><div><strong>${w.word}</strong><br><span style="font-size:0.7rem;">${w.meaning || ''}</span></div><div><button class="btn speakSaved" data-word="${w.word}" style="background:none;">🔊</button><button class="btn removeWord" data-idx="${idx}" style="background:none; color:red;">🗑️</button></div></div>`).join('');
         document.querySelectorAll('.speakSaved').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); speakText(btn.dataset.word); }));
-        document.querySelectorAll('.removeWord').forEach(btn => btn.addEventListener('click', (e) => { let idx = parseInt(btn.dataset.idx); savedWords.splice(idx,1); localStorage.setItem('elsa_saved_words', JSON.stringify(savedWords)); renderSavedWords(); initFlashcardData(); if (document.getElementById('flashcardZone').style.display === 'block') closeFlashcardReview(); }));
+        document.querySelectorAll('.removeWord').forEach(btn => btn.addEventListener('click', (e) => { let idx = parseInt(btn.dataset.idx); savedWords.splice(idx,1); localStorage.setItem('elsa_saved_words', JSON.stringify(savedWords)); renderSavedWords(); initFlashcardData(); if (document.getElementById('flashcardZone').style.display === 'block') closeGame(); showToast('🗑️ Đã xóa từ', 'info'); }));
         initFlashcardData();
     }
     function speakText(text) { let u = new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=0.9; speechSynthesis.cancel(); speechSynthesis.speak(u); }
-    function addMessage(role, content) {
-        const container = document.getElementById('chatMessages');
-        const div = document.createElement('div');
-        div.className = `message ${role}`;
-        div.innerHTML = `<div class="message-avatar">${role==='user'?'👤':'👩‍🏫'}</div><div class="message-bubble">${marked.parse(content)}</div>`;
-        container.appendChild(div);
-        container.scrollTop = container.scrollHeight;
+    
+    // ==================== AI & ESSAY (cải thiện: đảm bảo improved version bằng tiếng Anh) ====================
+    async function callAI(systemPrompt, userMessage, maxTokens=1500) {
+        if (!isApiKeyValid()) throw new Error('Chưa cấu hình API Key. Vui lòng tải lại trang và nhập key.');
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        try {
+            const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${OPENROUTER_KEY}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: 'openai/gpt-4o-mini', messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMessage }], temperature: 0.4, max_tokens: maxTokens }),
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return (await res.json()).choices[0].message.content;
+        } catch (err) {
+            clearTimeout(timeoutId);
+            throw new Error(err.name === 'AbortError' ? 'Quá thời gian' : err.message);
+        }
     }
+    
+    async function evaluateEssay(essay) {
+        // Prompt mạnh mẽ yêu cầu improvedVersion_en bắt buộc là tiếng Anh
+        const systemPrompt = `Bạn là giám khảo IELTS/TOEFL chuyên nghiệp. Chấm bài viết tiếng Anh thang điểm 10, chia mục Grammar (2.5), Vocab (2.5), Cohesion (2.5), Task (2.5). 
+        Trả về JSON chính xác với các trường:
+        - totalScore (float)
+        - grammar (float)
+        - vocab (float)
+        - cohesion (float)
+        - task (float)
+        - feedback_vi (nhận xét chi tiết bằng TIẾNG VIỆT)
+        - feedback_en (detailed feedback in English)
+        - improvedVersion_en (PHẢI bằng TIẾNG ANH, viết lại đoạn văn của người dùng một cách hoàn chỉnh, sửa lỗi ngữ pháp, từ vựng, cấu trúc. KHÔNG ĐƯỢC dùng tiếng Việt trong trường này. Nội dung phải là tiếng Anh thuần túy.)
+        Chỉ trả về JSON hợp lệ, không thêm text thừa.`;
+        
+        let resp = await callAI(systemPrompt, essay, 1600);
+        let clean = resp.replace(/```json/g, '').replace(/```/g, '').trim();
+        let parsed;
+        try {
+            parsed = JSON.parse(clean);
+        } catch(e) {
+            console.error("JSON parse error", clean);
+            throw new Error('AI phản hồi không đúng định dạng JSON');
+        }
+        
+        // Kiểm tra nếu improvedVersion_en có dấu hiệu tiếng Việt (chứa dấu thanh hoặc từ tiếng Việt phổ biến) thì gọi lại AI để dịch
+        let improved = parsed.improvedVersion_en || "";
+        const hasVietnamese = /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/.test(improved);
+        if (hasVietnamese || improved.length === 0) {
+            console.warn("Phát hiện improved version có tiếng Việt hoặc rỗng, yêu cầu dịch sang tiếng Anh");
+            const translatePrompt = `Hãy dịch đoạn văn sau sang tiếng Anh (chỉ trả về bản dịch, không giải thích):\n${essay}\n\nViết lại đoạn văn này bằng tiếng Anh chuẩn, sửa lỗi nếu có.`;
+            const translated = await callAI("Bạn là dịch giả chuyên nghiệp, chỉ trả về bản dịch tiếng Anh.", translatePrompt, 800);
+            parsed.improvedVersion_en = translated.trim();
+        }
+        
+        return {
+            totalScore: parsed.totalScore || 0,
+            grammar: parsed.grammar || 0,
+            vocab: parsed.vocab || 0,
+            cohesion: parsed.cohesion || 0,
+            task: parsed.task || 0,
+            feedback_vi: parsed.feedback_vi || "Không có nhận xét.",
+            feedback_en: parsed.feedback_en || "No feedback.",
+            improvedVersion_en: parsed.improvedVersion_en || "No improved version."
+        };
+    }
+    
+    async function handleEssayScore() {
+        const essay = document.getElementById('essayInput').value.trim();
+        if (!essay) return showToast('📝 Hãy nhập bài viết tiếng Anh.', 'error');
+        const resultDiv = document.getElementById('essayResult');
+        resultDiv.innerHTML = '<div class="loading-spinner"></div><p>Đang phân tích...</p>';
+        try {
+            const evalData = await evaluateEssay(essay);
+            currentEssayData = evalData;
+            currentEssayLang = 'vi';
+            renderEssayResult();
+            showToast('✅ Chấm điểm thành công!', 'success');
+        } catch(e) {
+            resultDiv.innerHTML = `<div style="color:var(--error);">❌ Lỗi: ${e.message}</div>`;
+            showToast(e.message, 'error');
+        }
+    }
+    
+    function renderEssayResult() {
+        if (!currentEssayData) return;
+        const data = currentEssayData;
+        const isVi = currentEssayLang === 'vi';
+        const feedback = isVi ? data.feedback_vi : data.feedback_en;
+        const html = `<div class="score-card"><strong>📊 Điểm: ${data.totalScore}/10</strong>
+            <div class="score-bars">
+                <div>Grammar ${data.grammar}/2.5</div>
+                <div>Vocab ${data.vocab}/2.5</div>
+                <div>Cohesion ${data.cohesion}/2.5</div>
+                <div>Task ${data.task}/2.5</div>
+            </div>
+            <div>💬 ${marked.parse(feedback)}</div>
+            <div><strong>✏️ Improved Version (English):</strong><br>${marked.parse(data.improvedVersion_en)}</div>
+            <button id="toggleEssayLang" class="lang-toggle-btn">🔄 ${isVi ? '🇬🇧 English' : '🇻🇳 Tiếng Việt'}</button>
+        </div>`;
+        document.getElementById('essayResult').innerHTML = html;
+        document.getElementById('toggleEssayLang')?.addEventListener('click', () => {
+            currentEssayLang = currentEssayLang === 'vi' ? 'en' : 'vi';
+            renderEssayResult();
+        });
+    }
+    
+    // ==================== CHAT SEND ====================
+    async function getExpertTeacherResponse(userText, level) {
+        const system = `Bạn là giáo viên tiếng Anh chuyên nghiệp. Phản hồi học viên trình độ ${level} (CEFR) bằng tiếng Việt, sửa lỗi chi tiết, giải thích ngữ pháp, cung cấp 3-5 từ vựng nâng cao. Hãy trả lời hữu ích và khích lệ.`;
+        return await callAI(system, userText, 1600);
+    }
+    async function extractKeyVocabulary(text) {
+        const system = `Trích xuất 5-6 từ vựng/collocations quan trọng từ đoạn văn tiếng Anh. Trả về JSON array: [{"word":"...","meaning":"nghĩa tiếng Việt","pos":"n/v/adj","example":"..."}] chỉ JSON.`;
+        const raw = await callAI(system, text, 800);
+        try { let clean = raw.replace(/```json/g,'').replace(/```/g,'').trim(); return JSON.parse(clean); } catch(e) { return []; }
+    }
+    
     async function sendMessage() {
         let input = document.getElementById('userInput').value.trim();
         if (!input) return;
@@ -791,6 +956,7 @@
         const typingDiv = document.createElement('div'); typingDiv.className='message assistant'; typingDiv.id='typing'; typingDiv.innerHTML='<div class="message-avatar">👩‍🏫</div><div class="message-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
         document.getElementById('chatMessages').appendChild(typingDiv);
         try {
+            if (!isApiKeyValid()) throw new Error('Vui lòng nhập API Key (khởi động lại trang).');
             const reply = await getExpertTeacherResponse(input, userLevel);
             document.getElementById('typing')?.remove();
             addMessage('assistant', reply);
@@ -801,14 +967,96 @@
                 container.innerHTML = vocab.map(v => `<div class="vocab-item" data-word='${JSON.stringify(v)}'><div><strong>${v.word}</strong> <span>${v.pos||''}</span></div><div>${v.meaning}</div><button class="btn quick-save" style="margin-top:4px;">💾 Lưu</button></div>`).join('');
                 document.querySelectorAll('.vocab-item').forEach(el => {
                     const wd = JSON.parse(el.dataset.word);
-                    el.querySelector('.quick-save')?.addEventListener('click', (e) => { e.stopPropagation(); saveWordToCard(wd); alert(`Đã lưu ${wd.word}`); });
+                    el.querySelector('.quick-save')?.addEventListener('click', (e) => { e.stopPropagation(); saveWordToCard(wd); });
                     el.addEventListener('click', (e) => { if (!e.target.classList.contains('quick-save')) speakText(wd.word); });
                 });
             }
-        } catch(e) { document.getElementById('typing')?.remove(); addMessage('assistant', `Lỗi: ${e.message}`); }
+        } catch(e) { document.getElementById('typing')?.remove(); addMessage('assistant', `⚠️ Lỗi: ${e.message}`); showToast(e.message, 'error'); }
     }
-    function clearChatHistory() { document.getElementById('chatMessages').innerHTML = `<div class="message assistant"><div class="message-avatar">👩‍🏫</div><div class="message-bubble">✨ Đã xóa hội thoại.</div></div>`; }
-    function toggleTheme() { document.body.classList.toggle('light'); }
+    
+    // ==================== LEVEL TEST ====================
+    let currentQuestions = [], userAnswers = [];
+    const QUIZAPI_KEY = 'qa_sk_23a1ee7295fc4041dcf66d84bb21c7f52ac05db6';
+    async function fetchRealQuestions() {
+        const difficultyMap = { 'A1':'Easy', 'A2':'Easy', 'B1':'Medium', 'B2':'Medium', 'C1':'Hard', 'C2':'Hard' };
+        const difficulty = difficultyMap[userLevel] || 'Medium';
+        try {
+            const res = await fetch(`https://quizapi.io/api/v1/questions?apiKey=${QUIZAPI_KEY}&category=english&difficulty=${difficulty}&limit=8`);
+            if (!res.ok) throw new Error();
+            const data = await res.json();
+            if (data?.length) {
+                currentQuestions = data.map(q => {
+                    const opts = [q.answers.answer_a, q.answers.answer_b, q.answers.answer_c, q.answers.answer_d].filter(Boolean);
+                    let correct = '';
+                    if (q.correct_answer === 'answer_a') correct = q.answers.answer_a;
+                    else if (q.correct_answer === 'answer_b') correct = q.answers.answer_b;
+                    else if (q.correct_answer === 'answer_c') correct = q.answers.answer_c;
+                    else if (q.correct_answer === 'answer_d') correct = q.answers.answer_d;
+                    return { text: q.question, options: opts, correct, level: difficulty };
+                }).filter(q => q.options.length >= 2);
+                if (currentQuestions.length >= 4) return true;
+            }
+            currentQuestions = getFallbackQuestions();
+            return false;
+        } catch { currentQuestions = getFallbackQuestions(); return false; }
+    }
+    function getFallbackQuestions() {
+        return [
+            { text: "She ________ to the cinema every Sunday.", options: ["go", "goes", "going", "went"], correct: "goes", level: "A2" },
+            { text: "If I had known about the party, I ________ you.", options: ["will tell", "would tell", "would have told", "told"], correct: "would have told", level: "B2" },
+            { text: "The project was ________ difficult that nobody could finish it.", options: ["so", "such", "very", "too"], correct: "so", level: "B1" },
+            { text: "By the time we arrive, the film ________ already ________.", options: ["will / start", "has / started", "had / started", "will have / started"], correct: "will have / started", level: "B2" },
+            { text: "He is known ________ being one of the best doctors in the city.", options: ["as", "for", "to", "by"], correct: "for", level: "B1" },
+            { text: "She advised me ________ the job offer immediately.", options: ["accept", "to accept", "accepting", "accepted"], correct: "to accept", level: "B1" },
+            { text: "Not until the 20th century ________ significant changes in global communication.", options: ["did occur", "occurred", "there occurred", "did there occur"], correct: "did there occur", level: "C1" },
+            { text: "The CEO, along with his assistants, ________ attending the conference tomorrow.", options: ["is", "are", "were", "have"], correct: "is", level: "B2" }
+        ];
+    }
+    async function showLevelTestModal() {
+        const modal = document.getElementById('levelTestModal');
+        const modalBody = document.getElementById('modalBody');
+        modal.classList.add('active');
+        modalBody.innerHTML = `<div style="text-align:center; padding:2rem;"><div class="loading-spinner"></div><p>Đang tải đề thi...</p></div>`;
+        await fetchRealQuestions();
+        renderTestQuestions();
+    }
+    function renderTestQuestions() {
+        const container = document.getElementById('modalBody');
+        container.innerHTML = '';
+        userAnswers = new Array(currentQuestions.length).fill(null);
+        currentQuestions.forEach((q, idx) => {
+            const div = document.createElement('div');
+            div.className = 'question-item';
+            div.innerHTML = `<div class="question-text">${idx+1}. ${q.text}</div><div class="options" data-qidx="${idx}">${q.options.map(opt => `<label class="option"><input type="radio" name="q${idx}" value="${opt}"> ${opt}</label>`).join('')}</div>`;
+            container.appendChild(div);
+        });
+        document.querySelectorAll('.option input').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const qidx = parseInt(radio.name.slice(1));
+                userAnswers[qidx] = e.target.value;
+            });
+        });
+    }
+    function calculateResult() {
+        let score = 0;
+        currentQuestions.forEach((q, idx) => { if (userAnswers[idx] === q.correct) score++; });
+        let percentage = (score / currentQuestions.length) * 100;
+        let newLevel = "A2";
+        if (percentage >= 90) newLevel = "C1";
+        else if (percentage >= 75) newLevel = "B2";
+        else if (percentage >= 55) newLevel = "B1";
+        else if (percentage >= 35) newLevel = "A2";
+        else newLevel = "A1";
+        const advice = { A1: "🌟 Người mới bắt đầu.", A2: "📘 Sơ cấp.", B1: "🎯 Trung cấp.", B2: "⚡ Trung cấp khá.", C1: "🏆 Cao cấp." };
+        const container = document.getElementById('modalBody');
+        container.innerHTML = `<div class="result-area"><h3>📊 Kết quả</h3><p>Đúng <strong>${score}/${currentQuestions.length}</strong> câu.</p><p>🎯 Trình độ đề xuất: <strong class="badge" style="font-size:1.2rem;">${newLevel}</strong></p><p>${advice[newLevel] || "Tiếp tục ôn luyện!"}</p><button id="acceptLevelBtn" class="btn btn-primary">✅ Lưu trình độ & Đóng</button></div>`;
+        document.getElementById('acceptLevelBtn')?.addEventListener('click', () => { userLevel = newLevel; localStorage.setItem('user_cefr', userLevel); updateLevelUI(); closeModal(); canvasConfetti({ particleCount: 100, spread: 60 }); });
+    }
+    function closeModal() { document.getElementById('levelTestModal').classList.remove('active'); }
+    
+    // ==================== INIT & UTILITIES ====================
+    function toggleTheme() { document.body.classList.toggle('light'); localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark'); }
+    function loadTheme() { if (localStorage.getItem('theme') === 'light') document.body.classList.add('light'); }
     function updateLevelUI() {
         document.getElementById('cefrLevelDisplay').innerText = userLevel;
         const levels = ['A1','A2','B1','B2','C1','C2'];
@@ -817,23 +1065,39 @@
         const desc = { A1:"Người mới bắt đầu", A2:"Sơ cấp", B1:"Trung cấp", B2:"Trung cấp khá", C1:"Cao cấp", C2:"Thành thạo" };
         document.getElementById('levelDesc').innerText = desc[userLevel] || "Trung cấp";
     }
-    function loadData() { let stored = localStorage.getItem('elsa_saved_words'); if (stored) savedWords = JSON.parse(stored); renderSavedWords(); updateLevelUI(); initFlashcardData(); }
+    function loadData() {
+        let stored = localStorage.getItem('elsa_saved_words');
+        if (stored) savedWords = JSON.parse(stored);
+        renderSavedWords();
+        updateLevelUI();
+        loadChatHistory();
+        initFlashcardData();
+        loadTheme();
+    }
     loadData();
     
     // EVENT LISTENERS
     document.getElementById('sendBtn').addEventListener('click', sendMessage);
     document.getElementById('clearChat').addEventListener('click', clearChatHistory);
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-    document.getElementById('reviewFlashcardBtn').addEventListener('click', startReview);
     document.getElementById('scoreEssayBtn').addEventListener('click', handleEssayScore);
     document.getElementById('levelTestBtn').addEventListener('click', showLevelTestModal);
     document.getElementById('speakInputBtn').addEventListener('click', () => { let txt = document.getElementById('userInput').value; if(txt) speakText(txt); });
-    document.getElementById('saveVocabBtn').addEventListener('click', () => { if(currentVocab.length) { currentVocab.forEach(v=>saveWordToCard(v)); alert("Đã lưu tất cả từ vựng!"); } else alert("Chưa có từ."); });
-    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-    document.getElementById('skipTestBtn').addEventListener('click', closeModal);
-    document.getElementById('submitTestBtn').addEventListener('click', calculateResult);
-    document.getElementById('closeFlashcardBtn')?.addEventListener('click', closeFlashcardReview);
+    document.getElementById('saveVocabBtn').addEventListener('click', () => { if(currentVocab.length) { currentVocab.forEach(v=>saveWordToCard(v)); showToast(`✅ Đã lưu ${currentVocab.length} từ`, 'success'); } else showToast('Chưa có từ nào để lưu', 'info'); });
+    document.getElementById('startGameBtn').addEventListener('click', startGame);
+    document.getElementById('closeFlashcardBtn').addEventListener('click', closeGame);
+    document.querySelectorAll('.btn-game').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.btn-game').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentGameMode = btn.dataset.mode;
+        });
+    });
+    document.querySelector('.btn-game[data-mode="flashcard"]').classList.add('active');
     document.getElementById('userInput').addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+    document.getElementById('closeModalBtn')?.addEventListener('click', closeModal);
+    document.getElementById('skipTestBtn')?.addEventListener('click', closeModal);
+    document.getElementById('submitTestBtn')?.addEventListener('click', calculateResult);
 </script>
 </body>
 </html>
