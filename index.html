@@ -250,7 +250,36 @@
             border-radius: 20px;
             font-size: 0.7rem;
         }
-        /* Modal Test trình độ */
+        .score-card {
+            background: var(--bg-primary);
+            border-radius: 1rem;
+            padding: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        .score-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin: 8px 0;
+        }
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+        }
+        .lang-toggle-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -286,116 +315,17 @@
             from { transform: scale(0.95); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
-        .modal-header {
-            padding: 1.2rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            background: var(--card-bg);
-            z-index: 10;
-        }
-        .modal-header h2 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-        }
-        .modal-body {
-            padding: 1.5rem;
-        }
-        .question-item {
-            margin-bottom: 1.8rem;
-            background: var(--bg-secondary);
-            border-radius: 1rem;
-            padding: 1rem;
-        }
-        .question-text {
-            font-weight: 600;
-            margin-bottom: 0.8rem;
-        }
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .option {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 0.8rem;
-            border-radius: 0.8rem;
-            background: var(--bg-primary);
-            cursor: pointer;
-            transition: 0.1s;
-        }
-        .option:hover {
-            background: var(--accent);
-            color: white;
-        }
-        .option.selected {
-            background: var(--accent);
-            color: white;
-            border-left: 3px solid white;
-        }
-        .option input {
-            accent-color: var(--accent);
-            width: 18px;
-            height: 18px;
-        }
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-        }
-        .result-area {
-            background: var(--bg-primary);
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-top: 1rem;
-            text-align: center;
-        }
         @media (max-width: 900px) {
             .main-grid { grid-template-columns: 1fr; }
-            .app { height: auto; padding: 1rem; }
+            .app { height: auto; padding: 1rem; overflow: auto; }
+            body { overflow: auto; }
             .message { max-width: 95%; }
         }
-        .typing-indicator {
-            display: flex;
-            gap: 4px;
-            padding: 0.5rem;
-        }
-        .typing-indicator span {
-            width: 8px;
-            height: 8px;
-            background: var(--text-secondary);
-            border-radius: 50%;
-            animation: bounce 1.2s infinite;
-        }
+        .typing-indicator { display: flex; gap: 4px; padding: 0.5rem; }
+        .typing-indicator span { width: 8px; height: 8px; background: var(--text-secondary); border-radius: 50%; animation: bounce 1.2s infinite; }
         @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .loading-spinner {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
+        .loading-spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
@@ -457,25 +387,20 @@
                 <h3>✍️ Viết & Nhận điểm</h3>
                 <textarea id="essayInput" rows="2" placeholder="Dán bài viết tiếng Anh của bạn để được chấm điểm và nhận xét chi tiết..." style="width:100%; background:var(--bg-primary); border-radius:12px; padding:8px; border:1px solid var(--border); color:var(--text-primary);"></textarea>
                 <button id="scoreEssayBtn" class="btn" style="margin-top:8px;">📊 Chấm điểm & Feedback</button>
-                <div id="essayResult" style="margin-top:8px; font-size:0.8rem;"></div>
+                <div id="essayResult" style="margin-top:12px; font-size:0.85rem;"></div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- MODAL TEST TRÌNH ĐỘ - LẤY ĐỀ THI TỪ QUIZAPI.IO VỚI API KEY qa_sk_23a1ee7295fc4041dcf66d84bb21c7f52ac05db6 -->
+<!-- MODAL TEST TRÌNH ĐỘ -->
 <div id="levelTestModal" class="modal-overlay">
     <div class="modal-container">
         <div class="modal-header">
             <h2>📋 Đánh giá trình độ CEFR</h2>
             <button class="modal-close" id="closeModalBtn">&times;</button>
         </div>
-        <div class="modal-body" id="modalBody">
-            <div style="text-align:center; padding:2rem;">
-                <div class="loading-spinner"></div>
-                <p>Đang tải đề thi thực tế từ ngân hàng câu hỏi...</p>
-            </div>
-        </div>
+        <div class="modal-body" id="modalBody"><div class="loading-spinner"></div></div>
         <div class="modal-footer">
             <button id="skipTestBtn" class="btn">⏭️ Bỏ qua</button>
             <button id="submitTestBtn" class="btn btn-primary">✅ Nộp bài & xem kết quả</button>
@@ -495,62 +420,46 @@
     let currentVocab = [];
     let userLevel = localStorage.getItem('user_cefr') || 'B1';
     let lastAssistantText = "";
+    let currentEssayData = null;       // Lưu dữ liệu chấm bài để toggle ngôn ngữ
+    let currentEssayLang = 'vi';       // 'vi' hoặc 'en'
     
-    // === BIẾN CHO TEST TRÌNH ĐỘ ===
-    let currentQuestions = [];        // câu hỏi lấy từ API (hoặc fallback)
+    // === BIẾN TEST TRÌNH ĐỘ ===
+    let currentQuestions = [];
     let userAnswers = [];
-    const QUIZAPI_KEY = 'qa_sk_23a1ee7295fc4041dcf66d84bb21c7f52ac05db6';    // API key của bạn (nếu không hợp lệ sẽ dùng fallback)
+    const QUIZAPI_KEY = 'qa_sk_23a1ee7295fc4041dcf66d84bb21c7f52ac05db6';
     
-    // === HÀM GỌI API LẤY ĐỀ THI THẬT ===
     async function fetchRealQuestions() {
-        // Xác định độ khó dựa trên trình độ hiện tại của người dùng
         const difficultyMap = { 'A1':'Easy', 'A2':'Easy', 'B1':'Medium', 'B2':'Medium', 'C1':'Hard', 'C2':'Hard' };
         const difficulty = difficultyMap[userLevel] || 'Medium';
         const url = `https://quizapi.io/api/v1/questions?apiKey=${QUIZAPI_KEY}&category=english&difficulty=${difficulty}&limit=8`;
-        
         try {
             const response = await fetch(url);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const data = await response.json();
-            
             if (data && Array.isArray(data) && data.length > 0) {
-                // Chuyển đổi format từ API sang format hiển thị
                 currentQuestions = data.map(q => {
-                    // Lấy các đáp án (answer_a, answer_b, answer_c, answer_d)
                     const options = [];
                     if (q.answers.answer_a) options.push(q.answers.answer_a);
                     if (q.answers.answer_b) options.push(q.answers.answer_b);
                     if (q.answers.answer_c) options.push(q.answers.answer_c);
                     if (q.answers.answer_d) options.push(q.answers.answer_d);
-                    
-                    // Xác định đáp án đúng (correct_answer là 'answer_a', 'answer_b', ...)
                     let correctValue = '';
                     if (q.correct_answer === 'answer_a') correctValue = q.answers.answer_a;
                     else if (q.correct_answer === 'answer_b') correctValue = q.answers.answer_b;
                     else if (q.correct_answer === 'answer_c') correctValue = q.answers.answer_c;
                     else if (q.correct_answer === 'answer_d') correctValue = q.answers.answer_d;
-                    
-                    return {
-                        text: q.question,
-                        options: options,
-                        correct: correctValue,
-                        level: difficulty === 'Easy' ? 'A2' : (difficulty === 'Medium' ? 'B1' : 'C1')
-                    };
-                }).filter(q => q.options.length >= 2); // lọc câu hỏi thiếu đáp án
-                
+                    return { text: q.question, options, correct: correctValue, level: difficulty === 'Easy' ? 'A2' : (difficulty === 'Medium' ? 'B1' : 'C1') };
+                }).filter(q => q.options.length >= 2);
                 if (currentQuestions.length >= 4) return true;
             }
-            // Fallback nếu API trả về ít câu hỏi hoặc lỗi format
             currentQuestions = getFallbackQuestions();
             return false;
         } catch (error) {
-            console.error("Lỗi fetch API QuizAPI:", error);
             currentQuestions = getFallbackQuestions();
             return false;
         }
     }
     
-    // === BỘ CÂU HỎI DỰ PHÒNG CHẤT LƯỢNG CAO (MÔ PHỎNG ĐỀ THI THẬT) ===
     function getFallbackQuestions() {
         return [
             { text: "She ________ to the cinema every Sunday.", options: ["go", "goes", "going", "went"], correct: "goes", level: "A2" },
@@ -564,77 +473,39 @@
         ];
     }
     
-    // === HIỂN THỊ MODAL VÀ TẢI CÂU HỎI ===
     async function showLevelTestModal() {
         const modal = document.getElementById('levelTestModal');
         const modalBody = document.getElementById('modalBody');
         modal.classList.add('active');
-        
-        // Hiển thị trạng thái loading
         modalBody.innerHTML = `<div style="text-align:center; padding:2rem;"><div class="loading-spinner"></div><p>Đang tải đề thi thực tế từ ngân hàng câu hỏi...</p></div>`;
-        
-        const success = await fetchRealQuestions();
-        if (!success) {
-            modalBody.innerHTML += `<p style="color:var(--warning); margin-top:8px;">⚠️ Không thể lấy đề từ API (key không hợp lệ hoặc lỗi mạng). Đang sử dụng bộ câu hỏi dự phòng chất lượng cao.</p>`;
-            await new Promise(r => setTimeout(r, 800));
-        }
+        await fetchRealQuestions();
         renderTestQuestions();
     }
     
-    // === HIỂN THỊ CÁC CÂU HỎI ===
     function renderTestQuestions() {
         const container = document.getElementById('modalBody');
         container.innerHTML = '';
         userAnswers = new Array(currentQuestions.length).fill(null);
-        
         currentQuestions.forEach((q, idx) => {
             const questionDiv = document.createElement('div');
             questionDiv.className = 'question-item';
-            questionDiv.innerHTML = `
-                <div class="question-text">${idx+1}. ${q.text}</div>
-                <div class="options" data-qidx="${idx}">
-                    ${q.options.map(opt => `
-                        <label class="option" data-opt="${opt}">
-                            <input type="radio" name="q${idx}" value="${opt}"> 
-                            <span>${opt}</span>
-                        </label>
-                    `).join('')}
-                </div>
-            `;
+            questionDiv.innerHTML = `<div class="question-text">${idx+1}. ${q.text}</div><div class="options" data-qidx="${idx}">${q.options.map(opt => `<label class="option" data-opt="${opt}"><input type="radio" name="q${idx}" value="${opt}"> <span>${opt}</span></label>`).join('')}</div>`;
             container.appendChild(questionDiv);
         });
-        
-        // Gắn sự kiện cho radio
         document.querySelectorAll('.option').forEach(optEl => {
             const radio = optEl.querySelector('input');
             radio.addEventListener('change', (e) => {
                 const qidx = parseInt(optEl.closest('.options').dataset.qidx);
                 userAnswers[qidx] = e.target.value;
-                // Bỏ highlight cũ
                 document.querySelectorAll(`.options[data-qidx="${qidx}"] .option`).forEach(el => el.classList.remove('selected'));
                 optEl.classList.add('selected');
             });
         });
-        
-        // Khôi phục đáp án đã chọn (nếu có)
-        userAnswers.forEach((ans, idx) => {
-            if (ans) {
-                const targetRadio = document.querySelector(`input[name="q${idx}"][value="${ans}"]`);
-                if (targetRadio) {
-                    targetRadio.checked = true;
-                    const parentOpt = targetRadio.closest('.option');
-                    if (parentOpt) parentOpt.classList.add('selected');
-                }
-            }
-        });
     }
     
-    // === TÍNH ĐIỂM VÀ XÁC ĐỊNH TRÌNH ĐỘ ===
     function calculateResult() {
         let score = 0;
-        currentQuestions.forEach((q, idx) => {
-            if (userAnswers[idx] === q.correct) score++;
-        });
+        currentQuestions.forEach((q, idx) => { if (userAnswers[idx] === q.correct) score++; });
         let percentage = (score / currentQuestions.length) * 100;
         let newLevel = "A2";
         if (percentage >= 90) newLevel = "C1";
@@ -642,108 +513,120 @@
         else if (percentage >= 55) newLevel = "B1";
         else if (percentage >= 35) newLevel = "A2";
         else newLevel = "A1";
-        
+        const advice = { A1: "🌟 Người mới bắt đầu. Hãy tập trung vào từ vựng cơ bản.", A2: "📘 Sơ cấp. Luyện thêm thì quá khứ và tương lai.", B1: "🎯 Trung cấp. Cải thiện câu điều kiện, bị động.", B2: "⚡ Trung cấp khá. Tập trung thành ngữ, viết luận.", C1: "🏆 Cao cấp. Luyện thi học thuật." };
         const container = document.getElementById('modalBody');
-        const advice = {
-            A1: "🌟 Người mới bắt đầu. Hãy tập trung vào từ vựng cơ bản và cấu trúc câu đơn giản.",
-            A2: "📘 Sơ cấp. Bạn có thể giao tiếp chủ đề quen thuộc. Luyện thêm thì quá khứ và tương lai.",
-            B1: "🎯 Trung cấp. Nên cải thiện câu điều kiện, câu bị động và mở rộng collocations.",
-            B2: "⚡ Trung cấp khá. Tập trung vào thành ngữ, đọc hiểu chuyên sâu, viết luận.",
-            C1: "🏆 Cao cấp. Hãy luyện các bài thi học thuật và nâng cao khả năng diễn đạt tinh tế."
-        };
-        const resultHtml = `
-            <div class="result-area">
-                <h3>📊 Kết quả đánh giá</h3>
-                <p>Bạn trả lời đúng <strong>${score}/${currentQuestions.length}</strong> câu.</p>
-                <p>🎯 Trình độ đề xuất: <strong class="badge" style="font-size:1.2rem;">${newLevel}</strong></p>
-                <p>${advice[newLevel] || "Hãy tiếp tục ôn luyện mỗi ngày!"}</p>
-                <button id="acceptLevelBtn" class="btn btn-primary" style="margin-top:12px;">✅ Lưu trình độ & Đóng</button>
-            </div>
-        `;
-        container.innerHTML = resultHtml;
-        document.getElementById('acceptLevelBtn').addEventListener('click', () => {
-            userLevel = newLevel;
-            localStorage.setItem('user_cefr', userLevel);
-            updateLevelUI();
-            closeModal();
-            canvasConfetti({ particleCount: 120, spread: 70 });
-        });
+        container.innerHTML = `<div class="result-area"><h3>📊 Kết quả</h3><p>Đúng <strong>${score}/${currentQuestions.length}</strong> câu.</p><p>🎯 Trình độ đề xuất: <strong class="badge" style="font-size:1.2rem;">${newLevel}</strong></p><p>${advice[newLevel] || "Tiếp tục ôn luyện!"}</p><button id="acceptLevelBtn" class="btn btn-primary">✅ Lưu trình độ & Đóng</button></div>`;
+        document.getElementById('acceptLevelBtn')?.addEventListener('click', () => { userLevel = newLevel; localStorage.setItem('user_cefr', userLevel); updateLevelUI(); closeModal(); canvasConfetti({ particleCount: 100, spread: 60 }); });
     }
+    function closeModal() { document.getElementById('levelTestModal').classList.remove('active'); }
     
-    function closeModal() {
-        document.getElementById('levelTestModal').classList.remove('active');
-    }
-    
-    // === CÁC HÀM HỖ TRỢ CHAT, AI, TỪ VỰNG ===
+    // ==================== AI + ESSAY (VIETNAMESE + TOGGLE ENGLISH) ====================
     async function callAI(systemPrompt, userMessage, maxTokens=1500) {
         if (!OPENROUTER_KEY) throw new Error('Missing API key');
         const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${OPENROUTER_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'openai/gpt-4o-mini',
-                messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMessage }],
-                temperature: 0.4,
-                max_tokens: maxTokens
-            })
+            body: JSON.stringify({ model: 'openai/gpt-4o-mini', messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMessage }], temperature: 0.4, max_tokens: maxTokens })
         });
         if (!res.ok) throw new Error(await res.text());
         return (await res.json()).choices[0].message.content;
     }
     
+    async function evaluateEssay(essay) {
+        const systemPrompt = `Bạn là giám khảo IELTS/TOEFL chuyên nghiệp. Chấm bài viết tiếng Anh thang điểm 10, chia mục: Grammar (2.5), Vocab (2.5), Cohesion (2.5), Task (2.5). Trả về JSON CHÍNH XÁC với các trường: totalScore (float), grammar (float), vocab (float), cohesion (float), task (float), feedback_vi (nhận xét chi tiết bằng TIẾNG VIỆT), feedback_en (detailed feedback in English), improvedVersion_vi (phiên bản cải thiện bằng TIẾNG VIỆT - không bắt buộc), improvedVersion_en (phiên bản cải thiện bằng TIẾNG ANH - bắt buộc, luôn bằng tiếng Anh). Chỉ trả về JSON hợp lệ, không thêm text thừa.`;
+        const resp = await callAI(systemPrompt, essay, 1600);
+        try {
+            let clean = resp.replace(/```json/g, '').replace(/```/g, '').trim();
+            const parsed = JSON.parse(clean);
+            return {
+                totalScore: parsed.totalScore || 0,
+                grammar: parsed.grammar || 0,
+                vocab: parsed.vocab || 0,
+                cohesion: parsed.cohesion || 0,
+                task: parsed.task || 0,
+                feedback_vi: parsed.feedback_vi || "Không có nhận xét tiếng Việt.",
+                feedback_en: parsed.feedback_en || "No English feedback.",
+                improvedVersion_vi: parsed.improvedVersion_vi || "",
+                improvedVersion_en: parsed.improvedVersion_en || "No improved version provided."
+            };
+        } catch(e) {
+            console.error("Parse essay error", e);
+            return { totalScore: 0, grammar:0, vocab:0, cohesion:0, task:0, feedback_vi: "Lỗi phân tích từ AI, vui lòng thử lại.", feedback_en: "AI analysis failed, please retry.", improvedVersion_vi: "", improvedVersion_en: "Unable to generate improved version." };
+        }
+    }
+    
+    async function handleEssayScore() {
+        const essay = document.getElementById('essayInput').value.trim();
+        if (!essay) return alert('📝 Hãy nhập bài viết tiếng Anh để chấm điểm.');
+        const resultDiv = document.getElementById('essayResult');
+        resultDiv.innerHTML = '<div style="text-align:center;"><div class="loading-spinner"></div><p>Đang phân tích bài viết...</p></div>';
+        try {
+            const evalData = await evaluateEssay(essay);
+            currentEssayData = evalData;
+            currentEssayLang = 'vi';
+            renderEssayResult();
+        } catch(e) {
+            resultDiv.innerHTML = `<div style="background:var(--error); padding:8px; border-radius:12px;">❌ Lỗi: ${e.message}</div>`;
+        }
+    }
+    
+    function renderEssayResult() {
+        if (!currentEssayData) return;
+        const container = document.getElementById('essayResult');
+        const data = currentEssayData;
+        const isVi = (currentEssayLang === 'vi');
+        const feedbackText = isVi ? data.feedback_vi : data.feedback_en;
+        // Luôn hiển thị phiên bản cải thiện bằng TIẾNG ANH (theo yêu cầu)
+        const improvedVersionText = data.improvedVersion_en || (isVi ? "Chưa có phiên bản cải thiện." : "No improved version.");
+        const toggleLabel = isVi ? "🇬🇧 Chuyển sang tiếng Anh" : "🇻🇳 Chuyển sang tiếng Việt";
+        
+        const scoreHtml = `
+            <div class="score-card" style="border-left: 4px solid var(--accent);">
+                <div style="display:flex; justify-content:space-between; align-items:center;"><strong>📊 Điểm tổng: ${data.totalScore}/10</strong> 
+                <span style="font-size:0.7rem;">🎯 ${isVi ? 'Chi tiết' : 'Details'}</span></div>
+                <div class="score-bars">
+                    <div class="score-row"><span>📖 Grammar:</span> <strong>${data.grammar}/2.5</strong></div>
+                    <div class="score-row"><span>📚 Vocab:</span> <strong>${data.vocab}/2.5</strong></div>
+                    <div class="score-row"><span>🔗 Cohesion:</span> <strong>${data.cohesion}/2.5</strong></div>
+                    <div class="score-row"><span>✍️ Task:</span> <strong>${data.task}/2.5</strong></div>
+                </div>
+                <div><strong>💬 ${isVi ? 'Nhận xét chuyên sâu' : 'Detailed Feedback'}:</strong><br>${marked.parse(feedbackText)}</div>
+                <div style="margin-top:10px;"><strong>✏️ ${isVi ? 'Phiên bản cải thiện (Tiếng Anh)' : 'Improved Version (English)'}:</strong><br><div style="background:var(--bg-primary); padding:8px; border-radius:12px; font-size:0.85rem;">${marked.parse(improvedVersionText)}</div></div>
+                <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+                    <button id="toggleLangEssayBtn" class="lang-toggle-btn">🔄 ${toggleLabel}</button>
+                </div>
+            </div>
+        `;
+        container.innerHTML = scoreHtml;
+        const toggleBtn = document.getElementById('toggleLangEssayBtn');
+        if (toggleBtn) toggleBtn.addEventListener('click', () => { currentEssayLang = currentEssayLang === 'vi' ? 'en' : 'vi'; renderEssayResult(); });
+    }
+    
+    // ==================== CÁC HÀM CHAT, TỪ VỰNG ====================
     async function getExpertTeacherResponse(userText, level) {
-        const system = `Bạn là giáo viên tiếng Anh chuyên nghiệp, giàu kinh nghiệm. Hãy phản hồi học viên với phong cách: sửa lỗi chi tiết, giải thích ngữ pháp, đưa ra ví dụ. Trình độ học viên: ${level} (CEFR). Trả lời bằng tiếng Việt, xen tiếng Anh. Cung cấp 3-5 từ vựng/collocations nâng cao.`;
+        const system = `Bạn là giáo viên tiếng Anh chuyên nghiệp. Phản hồi học viên trình độ ${level} (CEFR) bằng tiếng Việt, có xen tiếng Anh. Sửa lỗi chi tiết, giải thích ngữ pháp, cung cấp 3-5 từ vựng nâng cao.`;
         return await callAI(system, userText, 1600);
     }
-    
     async function extractKeyVocabulary(text) {
-        const system = `Trích xuất 5-6 từ vựng/collocations quan trọng từ đoạn văn bản tiếng Anh dưới đây. Trả về JSON array: [{"word":"...","meaning":"nghĩa tiếng Việt","pos":"n/v/adj","collocations":["cụm"],"example":"..."}] chỉ trả về JSON hợp lệ.`;
+        const system = `Trích xuất 5-6 từ vựng/collocations quan trọng từ đoạn văn tiếng Anh. Trả về JSON array: [{"word":"...","meaning":"nghĩa tiếng Việt","pos":"n/v/adj","example":"..."}] chỉ JSON.`;
         const raw = await callAI(system, text, 800);
-        try {
-            let clean = raw.replace(/```json/g,'').replace(/```/g,'').trim();
-            return JSON.parse(clean);
-        } catch(e) { return []; }
+        try { let clean = raw.replace(/```json/g,'').replace(/```/g,'').trim(); return JSON.parse(clean); } catch(e) { return []; }
     }
-    
-    async function evaluateEssay(essay) {
-        const system = `Bạn là giám khảo IELTS/TOEFL. Chấm bài viết tiếng Anh thang điểm 10, chia mục Grammar, Vocab, Cohesion, Task. Trả về JSON: {"totalScore":7.5,"grammar":7,"vocab":8,"cohesion":7,"task":8,"feedback":"nhận xét","improvedVersion":"..."}`;
-        const resp = await callAI(system, essay, 1500);
-        try {
-            let clean = resp.replace(/```json/g,'').replace(/```/g,'').trim();
-            return JSON.parse(clean);
-        } catch(e) { return { totalScore:0, feedback: "Lỗi phân tích" }; }
-    }
-    
     function saveWordToCard(wordObj) {
         if (!wordObj.word) return;
         let existing = savedWords.find(w => w.word === wordObj.word);
-        if (!existing) {
-            savedWords.push({
-                word: wordObj.word, meaning: wordObj.meaning, pos: wordObj.pos,
-                collocations: wordObj.collocations || [], example: wordObj.example || '',
-                interval:0, ease:2.5, lastReview:0, nextReview:0
-            });
-        }
+        if (!existing) savedWords.push({ word: wordObj.word, meaning: wordObj.meaning, pos: wordObj.pos, example: wordObj.example || '', interval:0, ease:2.5 });
         localStorage.setItem('elsa_saved_words', JSON.stringify(savedWords));
         renderSavedWords();
     }
-    
     function renderSavedWords() {
         const container = document.getElementById('savedWordsContainer');
         if (!savedWords.length) { container.innerHTML = '<div>Chưa có từ nào</div>'; return; }
-        container.innerHTML = savedWords.map((w, idx) => `
-            <div style="display:flex; justify-content:space-between; background:var(--bg-primary); padding:6px; border-radius:8px; margin-bottom:4px;">
-                <div><strong>${w.word}</strong><br><span style="font-size:0.7rem;">${w.meaning}</span></div>
-                <div><button class="btn speakSaved" data-word="${w.word}" style="background:none;">🔊</button>
-                <button class="btn removeWord" data-idx="${idx}" style="background:none; color:red;">🗑️</button></div>
-            </div>
-        `).join('');
+        container.innerHTML = savedWords.map((w, idx) => `<div style="display:flex; justify-content:space-between; background:var(--bg-primary); padding:6px; border-radius:8px; margin-bottom:4px;"><div><strong>${w.word}</strong><br><span style="font-size:0.7rem;">${w.meaning}</span></div><div><button class="btn speakSaved" data-word="${w.word}" style="background:none;">🔊</button><button class="btn removeWord" data-idx="${idx}" style="background:none; color:red;">🗑️</button></div></div>`).join('');
         document.querySelectorAll('.speakSaved').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); speakText(btn.dataset.word); }));
         document.querySelectorAll('.removeWord').forEach(btn => btn.addEventListener('click', (e) => { let idx = parseInt(btn.dataset.idx); savedWords.splice(idx,1); localStorage.setItem('elsa_saved_words', JSON.stringify(savedWords)); renderSavedWords(); }));
     }
-    
     function speakText(text) { let u = new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=0.9; speechSynthesis.cancel(); speechSynthesis.speak(u); }
-    
     function addMessage(role, content) {
         const container = document.getElementById('chatMessages');
         const div = document.createElement('div');
@@ -751,9 +634,7 @@
         div.innerHTML = `<div class="message-avatar">${role==='user'?'👤':'👩‍🏫'}</div><div class="message-bubble">${marked.parse(content)}</div>`;
         container.appendChild(div);
         container.scrollTop = container.scrollHeight;
-        if (role === 'assistant') lastAssistantText = content;
     }
-    
     async function sendMessage() {
         let input = document.getElementById('userInput').value.trim();
         if (!input) return;
@@ -769,7 +650,7 @@
             if (vocab.length) {
                 currentVocab = vocab;
                 const container = document.getElementById('vocabList');
-                container.innerHTML = vocab.map(v => `<div class="vocab-item" data-word='${JSON.stringify(v)}'><div><strong>${v.word}</strong> <span style="font-size:0.7rem;">${v.pos}</span></div><div>${v.meaning}</div><button class="btn quick-save" style="margin-top:4px;">💾 Lưu</button></div>`).join('');
+                container.innerHTML = vocab.map(v => `<div class="vocab-item" data-word='${JSON.stringify(v)}'><div><strong>${v.word}</strong> <span style="font-size:0.7rem;">${v.pos||''}</span></div><div>${v.meaning}</div><button class="btn quick-save" style="margin-top:4px;">💾 Lưu</button></div>`).join('');
                 document.querySelectorAll('.vocab-item').forEach(el => {
                     const wd = JSON.parse(el.dataset.word);
                     el.querySelector('.quick-save')?.addEventListener('click', (e) => { e.stopPropagation(); saveWordToCard(wd); alert(`Đã lưu ${wd.word}`); });
@@ -778,18 +659,6 @@
             }
         } catch(e) { document.getElementById('typing')?.remove(); addMessage('assistant', `Lỗi: ${e.message}`); }
     }
-    
-    async function handleEssayScore() {
-        let essay = document.getElementById('essayInput').value.trim();
-        if (!essay) return alert('Nhập bài viết');
-        const resultDiv = document.getElementById('essayResult');
-        resultDiv.innerHTML = 'Đang chấm...';
-        try {
-            const evalRes = await evaluateEssay(essay);
-            resultDiv.innerHTML = `<div style="background:var(--bg-primary); padding:8px; border-radius:12px;"><strong>📊 Tổng: ${evalRes.totalScore}/10</strong><br>Grammar:${evalRes.grammar}/2.5 | Vocab:${evalRes.vocab}/2.5 | Cohesion:${evalRes.cohesion}/2.5 | Task:${evalRes.task}/2.5<br>💬 ${evalRes.feedback}</div>`;
-        } catch(e) { resultDiv.innerHTML = `Lỗi: ${e.message}`; }
-    }
-    
     function clearChatHistory() { document.getElementById('chatMessages').innerHTML = `<div class="message assistant"><div class="message-avatar">👩‍🏫</div><div class="message-bubble">✨ Đã xóa hội thoại. Hãy bắt đầu học tập nào!</div></div>`; }
     function toggleTheme() { document.body.classList.toggle('light'); }
     function updateLevelUI() {
@@ -800,15 +669,14 @@
         const desc = { A1:"Người mới bắt đầu", A2:"Sơ cấp", B1:"Trung cấp", B2:"Trung cấp khá", C1:"Cao cấp", C2:"Thành thạo" };
         document.getElementById('levelDesc').innerText = desc[userLevel] || "Trung cấp";
     }
-    
     function loadData() { let stored = localStorage.getItem('elsa_saved_words'); if (stored) savedWords = JSON.parse(stored); renderSavedWords(); updateLevelUI(); }
     loadData();
     
-    // EVENT LISTENERS
+    // EVENTS
     document.getElementById('sendBtn').addEventListener('click', sendMessage);
     document.getElementById('clearChat').addEventListener('click', clearChatHistory);
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-    document.getElementById('reviewFlashcardBtn').addEventListener('click', () => { alert('Chức năng flashcard đang được nâng cấp, vui lòng dùng sau'); });
+    document.getElementById('reviewFlashcardBtn').addEventListener('click', () => alert('Tính năng flashcard đang được nâng cấp.'));
     document.getElementById('scoreEssayBtn').addEventListener('click', handleEssayScore);
     document.getElementById('levelTestBtn').addEventListener('click', showLevelTestModal);
     document.getElementById('speakInputBtn').addEventListener('click', () => { let txt = document.getElementById('userInput').value; if(txt) speakText(txt); });
