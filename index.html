@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ELSA Pro | Chuyên gia tiếng Anh 1-1</title>
+    <title>ELSA Pro Teacher | AI English Expert</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
@@ -13,49 +13,136 @@
             padding: 0;
             box-sizing: border-box;
         }
+
+        /* ===== BASE DARK THEME (Modern, high contrast) ===== */
         :root {
-            --bg-primary: #0b1120;
-            --bg-secondary: #1e293b;
-            --surface: #0f172a;
-            --card-bg: #1e293b;
-            --border: #334155;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --accent: #3b82f6;
-            --accent-glow: #2563eb;
+            --bg-primary: #0a0e17;
+            --bg-secondary: #131926;
+            --surface: #0f1420;
+            --card-bg: rgba(19, 25, 38, 0.92);
+            --card-border: rgba(79, 70, 229, 0.35);
+            --border: #1e2a3a;
+            --text-primary: #f0f3fa;
+            --text-secondary: #b9c3dd;
+            --text-muted: #8d99ae;
+            --accent: #6366f1;
+            --accent-glow: #4f46e5;
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
-            --gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
             --toast-bg: #1e293b;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 12px rgba(99, 102, 241, 0.5);
         }
-        body.light {
-            --bg-primary: #f8fafc;
+
+        /* Light theme - clean & crisp */
+        body.theme-light {
+            --bg-primary: #f4f7fb;
             --bg-secondary: #ffffff;
-            --surface: #f1f5f9;
-            --card-bg: #ffffff;
-            --border: #e2e8f0;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
+            --surface: #f0f4f9;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --card-border: rgba(99, 102, 241, 0.3);
+            --border: #e2edf7;
+            --text-primary: #0c1a2f;
+            --text-secondary: #2c3e5c;
+            --text-muted: #5e768d;
             --toast-bg: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.12);
         }
+
+        /* Sunset theme - warm, cozy, readable */
+        body.theme-sunset {
+            --bg-primary: #1e1510;
+            --bg-secondary: #2a1f18;
+            --surface: #241b14;
+            --card-bg: rgba(42, 31, 24, 0.94);
+            --card-border: rgba(249, 115, 22, 0.4);
+            --border: #874a2c;
+            --text-primary: #fff3e9;
+            --text-secondary: #ffddc4;
+            --text-muted: #e2b894;
+            --accent: #f97316;
+            --accent-glow: #ea580c;
+            --gradient: linear-gradient(135deg, #f97316, #f43f5e);
+        }
+
+        /* Ocean theme - deep blue, soothing, high legibility */
+        body.theme-ocean {
+            --bg-primary: #0b1c2c;
+            --bg-secondary: #0f2a40;
+            --surface: #0c2338;
+            --card-bg: rgba(15, 42, 64, 0.92);
+            --card-border: rgba(56, 189, 248, 0.35);
+            --border: #1e5575;
+            --text-primary: #eaf9ff;
+            --text-secondary: #c7eaff;
+            --text-muted: #9ac9e6;
+            --accent: #0ea5e9;
+            --accent-glow: #0284c7;
+            --gradient: linear-gradient(135deg, #0ea5e9, #2dd4bf);
+        }
+
+        /* Forest theme - natural green, restful, crisp */
+        body.theme-forest {
+            --bg-primary: #0a1e16;
+            --bg-secondary: #0f2f22;
+            --surface: #0c261c;
+            --card-bg: rgba(15, 47, 34, 0.94);
+            --card-border: rgba(74, 222, 128, 0.4);
+            --border: #2b6e4f;
+            --text-primary: #ebfff2;
+            --text-secondary: #c8f0da;
+            --text-muted: #95d5b2;
+            --accent: #22c55e;
+            --accent-glow: #16a34a;
+            --gradient: linear-gradient(135deg, #22c55e, #14b8a6);
+        }
+
+        /* Dark theme (explicit class) - same as default high contrast */
+        body.theme-dark {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #131926;
+            --surface: #0f1420;
+            --card-bg: rgba(19, 25, 38, 0.92);
+            --card-border: rgba(79, 70, 229, 0.35);
+            --border: #1e2a3a;
+            --text-primary: #f0f3fa;
+            --text-secondary: #b9c3dd;
+            --text-muted: #8d99ae;
+        }
+
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            transition: all 0.2s;
+            transition: background 0.3s ease, color 0.2s ease;
             line-height: 1.5;
             overflow: hidden;
         }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-glow); }
+
         .app {
             max-width: 1600px;
             margin: 0 auto;
-            padding: 1rem 1.5rem;
+            padding: 1.25rem 1.5rem;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -63,8 +150,9 @@
             flex-wrap: wrap;
             gap: 1rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
             margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
         }
         .logo h1 {
             font-size: 1.8rem;
@@ -73,17 +161,31 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            letter-spacing: -0.02em;
         }
-        .logo p {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
+        .logo p { font-size: 0.75rem; color: var(--text-secondary); font-weight: 500; }
+
         .toolbar {
             display: flex;
             gap: 0.75rem;
             align-items: center;
             flex-wrap: wrap;
         }
+
+        .theme-selector {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+        }
+        .theme-selector:hover { border-color: var(--accent); }
+
         .btn {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -92,56 +194,59 @@
             font-weight: 500;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--text-primary);
+            backdrop-filter: blur(4px);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+            border-color: var(--accent);
+            background: var(--bg-secondary);
         }
         .btn-primary {
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent), var(--accent-glow));
             border: none;
             color: white;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.1);
         }
         .btn-primary:hover {
-            background: var(--accent-glow);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(59,130,246,0.3);
+            box-shadow: var(--shadow-glow);
         }
-        .btn-outline {
-            background: transparent;
-            border-color: var(--accent);
-            color: var(--accent);
-        }
+        .btn-outline { background: transparent; border-color: var(--accent); color: var(--accent); }
         .btn-game {
-            background: var(--bg-primary);
+            background: var(--bg-secondary);
             border-color: var(--border);
             padding: 0.3rem 0.8rem;
             font-size: 0.75rem;
+            color: var(--text-secondary);
         }
-        .btn-game.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
+        .btn-game.active { background: var(--accent); color: white; border-color: var(--accent); }
+
         .main-grid {
             display: grid;
-            grid-template-columns: 1fr 320px;
+            grid-template-columns: 2fr 1fr;
             gap: 1.5rem;
             flex: 1;
             min-height: 0;
             overflow: hidden;
         }
+
         .chat-panel {
             background: var(--card-bg);
+            backdrop-filter: blur(12px);
             border-radius: 1.5rem;
-            border: 1px solid var(--border);
+            border: 1px solid var(--card-border);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-lg);
         }
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 1.2rem;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
@@ -150,36 +255,34 @@
             display: flex;
             gap: 0.75rem;
             max-width: 85%;
-            animation: fadeIn 0.2s;
+            animation: fadeInUp 0.25s ease-out;
         }
-        .message.user {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
+        .message.user { align-self: flex-end; flex-direction: row-reverse; }
         .message-avatar {
             width: 38px;
             height: 38px;
-            background: var(--bg-secondary);
+            background: linear-gradient(135deg, var(--accent), var(--accent-glow));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
             flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
         }
-        .message.user .message-avatar {
-            background: var(--accent);
-        }
+        .message.user .message-avatar { background: linear-gradient(135deg, #10b981, #059669); }
         .message-bubble {
             background: var(--bg-secondary);
-            padding: 0.75rem 1rem;
+            padding: 0.75rem 1.2rem;
             border-radius: 1.2rem;
             border-top-left-radius: 0.2rem;
             font-size: 0.95rem;
             line-height: 1.5;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-primary);
         }
         .message.user .message-bubble {
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent), var(--accent-glow));
             color: white;
             border-top-right-radius: 0.2rem;
             border-top-left-radius: 1.2rem;
@@ -201,66 +304,53 @@
             font-family: inherit;
             resize: none;
             font-size: 0.9rem;
+            transition: all 0.2s;
         }
+        .chat-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(99,102,241,0.2); }
         .side-panel {
             background: var(--card-bg);
+            backdrop-filter: blur(12px);
             border-radius: 1.5rem;
-            border: 1px solid var(--border);
-            padding: 1.2rem;
+            border: 1px solid var(--card-border);
+            padding: 1.25rem;
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
+            gap: 1.25rem;
             overflow-y: auto;
+            box-shadow: var(--shadow-md);
         }
         .card {
             background: var(--bg-secondary);
-            border-radius: 1rem;
+            border-radius: 1.2rem;
             padding: 1rem;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            color: var(--text-primary);
         }
-        .card h3 {
-            font-size: 1rem;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .progress-bar {
-            height: 6px;
-            background: var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 0.5rem 0;
-        }
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--accent);
-            border-radius: 10px;
-        }
-        .vocab-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            max-height: 200px;
-            overflow-y: auto;
-        }
+        .card:hover { border-color: var(--card-border); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+        .card h3 { font-size: 1rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--text-primary); }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 10px; overflow: hidden; margin: 0.5rem 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #8b5cf6); border-radius: 10px; transition: width 0.3s ease; }
+        .vocab-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 200px; overflow-y: auto; }
         .vocab-item {
             background: var(--bg-primary);
             padding: 0.6rem;
             border-radius: 0.8rem;
             cursor: pointer;
             border-left: 3px solid var(--accent);
+            transition: all 0.1s;
+            color: var(--text-primary);
         }
+        .vocab-item:hover { transform: translateX(4px); background: var(--bg-secondary); }
         .flashcard-area {
             margin-top: 0.8rem;
             background: var(--bg-primary);
             border-radius: 1rem;
             padding: 0.8rem;
             text-align: center;
-            transition: all 0.2s;
         }
         .flashcard {
-            background: var(--card-bg);
+            background: linear-gradient(145deg, var(--card-bg), var(--bg-secondary));
             border-radius: 1rem;
             padding: 1rem;
             cursor: pointer;
@@ -271,39 +361,20 @@
             font-weight: 600;
             font-size: 1.1rem;
             border: 1px solid var(--border);
-            transition: transform 0.1s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: var(--text-primary);
         }
-        .flashcard:hover {
-            transform: scale(0.98);
-        }
-        .game-options {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
+        .flashcard:hover { transform: scale(0.98); box-shadow: var(--shadow-md); }
         .quiz-option {
             background: var(--bg-secondary);
             padding: 0.5rem;
             margin: 6px 0;
             border-radius: 1rem;
             cursor: pointer;
-            transition: 0.1s;
+            transition: all 0.15s;
+            color: var(--text-primary);
         }
-        .quiz-option:hover { background: var(--accent); color: white; }
-        .matching-pairs {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .matching-col {
-            flex: 1;
-            background: var(--bg-secondary);
-            border-radius: 1rem;
-            padding: 0.5rem;
-        }
+        .quiz-option:hover { background: var(--accent); color: white; transform: scale(1.02); }
         .match-item {
             background: var(--bg-primary);
             margin: 6px;
@@ -311,37 +382,25 @@
             border-radius: 0.8rem;
             cursor: pointer;
             text-align: center;
+            transition: all 0.1s;
+            color: var(--text-primary);
         }
-        .match-item.selected {
-            background: var(--accent);
-            color: white;
-        }
-        .flashcard-buttons {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            margin-top: 0.8rem;
-            flex-wrap: wrap;
-        }
-        .rate-btn {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            padding: 0.3rem 0.8rem;
-            border-radius: 2rem;
-            font-size: 0.7rem;
-            cursor: pointer;
-        }
+        .match-item.selected { background: var(--accent); color: white; transform: scale(0.98); }
         .badge {
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent), var(--accent-glow));
             padding: 2px 8px;
             border-radius: 20px;
             font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
         }
         .score-card {
             background: var(--bg-primary);
             border-radius: 1rem;
             padding: 0.8rem;
             margin-top: 0.5rem;
+            border-left: 3px solid var(--accent);
+            color: var(--text-primary);
         }
         .lang-toggle-btn {
             background: var(--accent);
@@ -352,9 +411,6 @@
             border-radius: 30px;
             cursor: pointer;
             margin-top: 8px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
         }
         .modal-overlay {
             position: fixed;
@@ -362,8 +418,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(12px);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -372,24 +428,20 @@
             opacity: 0;
             transition: all 0.2s ease;
         }
-        .modal-overlay.active {
-            visibility: visible;
-            opacity: 1;
-        }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
         .modal-container {
             background: var(--card-bg);
+            backdrop-filter: blur(16px);
             border-radius: 2rem;
             width: 90%;
             max-width: 650px;
             max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--card-border);
             animation: modalPop 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
-        }
-        @keyframes modalPop {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            padding: 1.5rem;
+            color: var(--text-primary);
         }
         .toast-container {
             position: fixed;
@@ -402,46 +454,58 @@
         }
         .toast {
             background: var(--toast-bg);
+            backdrop-filter: blur(8px);
             color: var(--text-primary);
             border-left: 4px solid var(--accent);
             padding: 10px 16px;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow-lg);
             font-size: 0.85rem;
             max-width: 280px;
             animation: slideIn 0.2s ease;
         }
-        .toast.error { border-left-color: var(--error); }
-        .toast.success { border-left-color: var(--success); }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes modalPop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.2s infinite;
         }
-        @media (max-width: 900px) {
-            .main-grid { grid-template-columns: 1fr; }
-            .app { height: auto; padding: 1rem; overflow: auto; }
-            body { overflow: auto; }
-            .message { max-width: 95%; }
-        }
-        .typing-indicator span { width: 8px; height: 8px; background: var(--text-secondary); border-radius: 50%; animation: bounce 1.2s infinite; }
         @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .loading-spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .due-count { background: var(--accent); border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; margin-left: 6px; }
+        .due-count { background: var(--accent); border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; margin-left: 6px; color: white; }
+        @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } .app { height: auto; padding: 1rem; overflow: auto; } body { overflow: auto; } .message { max-width: 95%; } }
     </style>
 </head>
 <body>
 <div class="app">
     <div class="header">
-        <div>
-            <div class="logo">
-                <h1>🎓 ELSA Pro Teacher</h1>
-                <p>Chuyên gia tiếng Anh 1-1 | Lộ trình CEFR | Chấm chữa chuyên sâu</p>
-            </div>
+        <div class="logo">
+            <h1>🎓 ELSA Pro Teacher</h1>
+            <p>Chuyên gia tiếng Anh 1-1 | Lộ trình CEFR | Chấm chữa chuyên sâu</p>
         </div>
         <div class="toolbar">
-            <button id="themeToggle" class="btn">🌓 Theme</button>
+            <select id="themeSelector" class="theme-selector">
+                <option value="dark">🌙 Dark Hiện Đại</option>
+                <option value="light">☀️ Light Tinh Tế</option>
+                <option value="sunset">🌅 Sunset Ấm áp</option>
+                <option value="ocean">🌊 Ocean Thư giãn</option>
+                <option value="forest">🌲 Forest Tự nhiên</option>
+                <option value="auto">⏲️ Auto (Theo giờ)</option>
+            </select>
             <button id="clearChat" class="btn">🗑️ Clear</button>
             <button id="levelTestBtn" class="btn btn-outline">📊 Test trình độ</button>
         </div>
@@ -488,7 +552,7 @@
             </div>
             <div class="card">
                 <h3>✍️ Viết & Nhận điểm</h3>
-                <textarea id="essayInput" rows="2" placeholder="Dán bài viết tiếng Anh của bạn để được chấm điểm và nhận xét chi tiết..." style="width:100%; background:var(--bg-primary); border-radius:12px; padding:8px; border:1px solid var(--border); color:var(--text-primary);"></textarea>
+                <textarea id="essayInput" rows="2" placeholder="Dán bài viết tiếng Anh của bạn để được chấm điểm và nhận xét chi tiết..." style="width:100%; background:var(--bg-primary); border-radius:12px; padding:8px; border:1px solid var(--border); color:var(--text-primary); resize:vertical;"></textarea>
                 <button id="scoreEssayBtn" class="btn" style="margin-top:8px;">📊 Chấm điểm & Feedback</button>
                 <div id="essayResult" style="margin-top:12px; font-size:0.85rem;"></div>
             </div>
@@ -499,9 +563,12 @@
 <!-- MODAL TEST TRÌNH ĐỘ -->
 <div id="levelTestModal" class="modal-overlay">
     <div class="modal-container">
-        <div class="modal-header"><h2>📋 Đánh giá trình độ CEFR</h2><button class="modal-close" id="closeModalBtn">&times;</button></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h2>📋 Đánh giá trình độ CEFR</h2>
+            <button id="closeModalBtn" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-primary);">&times;</button>
+        </div>
         <div class="modal-body" id="modalBody"><div class="loading-spinner"></div></div>
-        <div class="modal-footer">
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
             <button id="skipTestBtn" class="btn">⏭️ Bỏ qua</button>
             <button id="submitTestBtn" class="btn btn-primary">✅ Nộp bài & xem kết quả</button>
         </div>
@@ -511,7 +578,7 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-    // ==================== CORE CONFIG ====================
+    // ==================== GIỮ NGUYÊN 100% LOGIC (KHÔNG THAY ĐỔI) ====================
     let OPENROUTER_KEY = localStorage.getItem('openrouter_key');
     if (!OPENROUTER_KEY) {
         OPENROUTER_KEY = prompt('🔑 Nhập OpenRouter API Key (lấy tại openrouter.ai):', '');
@@ -526,7 +593,6 @@
     let currentEssayLang = 'vi';
     let flashcards = [];
     
-    // Game state
     let currentGameMode = 'flashcard';
     let gameCards = [];
     let currentGameIndex = 0;
@@ -544,7 +610,6 @@
     }
     function isApiKeyValid() { return OPENROUTER_KEY && OPENROUTER_KEY.trim().length > 0; }
     
-    // ==================== CHAT PERSISTENCE ====================
     function saveChatHistory() { localStorage.setItem('elsa_chat_history', JSON.stringify(chatHistory)); }
     function loadChatHistory() {
         const container = document.getElementById('chatMessages');
@@ -574,7 +639,6 @@
     }
     function clearChatHistory() { chatHistory = []; saveChatHistory(); loadChatHistory(); showToast('🧹 Đã xóa lịch sử chat', 'success'); }
     
-    // ==================== FLASHCARD & SM2 ====================
     function initFlashcardData() {
         flashcards = savedWords.map(word => ({
             id: word.word,
@@ -622,7 +686,6 @@
         updateDueBadge();
     }
     
-    // ==================== GAME MODES ====================
     function startGame() {
         const due = getDueCards();
         if (due.length === 0) {
@@ -802,7 +865,6 @@
         currentGameIndex = 0;
     }
     
-    // ==================== TỪ VỰNG ====================
     function saveWordToCard(wordObj) {
         if (!wordObj.word) return;
         let existing = savedWords.find(w => w.word === wordObj.word);
@@ -830,7 +892,6 @@
     }
     function speakText(text) { let u = new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=0.9; speechSynthesis.cancel(); speechSynthesis.speak(u); }
     
-    // ==================== AI & ESSAY (cải thiện: đảm bảo improved version bằng tiếng Anh) ====================
     async function callAI(systemPrompt, userMessage, maxTokens=1500) {
         if (!isApiKeyValid()) throw new Error('Chưa cấu hình API Key. Vui lòng tải lại trang và nhập key.');
         const controller = new AbortController();
@@ -852,7 +913,6 @@
     }
     
     async function evaluateEssay(essay) {
-        // Prompt mạnh mẽ yêu cầu improvedVersion_en bắt buộc là tiếng Anh
         const systemPrompt = `Bạn là giám khảo IELTS/TOEFL chuyên nghiệp. Chấm bài viết tiếng Anh thang điểm 10, chia mục Grammar (2.5), Vocab (2.5), Cohesion (2.5), Task (2.5). 
         Trả về JSON chính xác với các trường:
         - totalScore (float)
@@ -864,7 +924,6 @@
         - feedback_en (detailed feedback in English)
         - improvedVersion_en (PHẢI bằng TIẾNG ANH, viết lại đoạn văn của người dùng một cách hoàn chỉnh, sửa lỗi ngữ pháp, từ vựng, cấu trúc. KHÔNG ĐƯỢC dùng tiếng Việt trong trường này. Nội dung phải là tiếng Anh thuần túy.)
         Chỉ trả về JSON hợp lệ, không thêm text thừa.`;
-        
         let resp = await callAI(systemPrompt, essay, 1600);
         let clean = resp.replace(/```json/g, '').replace(/```/g, '').trim();
         let parsed;
@@ -874,17 +933,13 @@
             console.error("JSON parse error", clean);
             throw new Error('AI phản hồi không đúng định dạng JSON');
         }
-        
-        // Kiểm tra nếu improvedVersion_en có dấu hiệu tiếng Việt (chứa dấu thanh hoặc từ tiếng Việt phổ biến) thì gọi lại AI để dịch
         let improved = parsed.improvedVersion_en || "";
         const hasVietnamese = /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/.test(improved);
         if (hasVietnamese || improved.length === 0) {
-            console.warn("Phát hiện improved version có tiếng Việt hoặc rỗng, yêu cầu dịch sang tiếng Anh");
             const translatePrompt = `Hãy dịch đoạn văn sau sang tiếng Anh (chỉ trả về bản dịch, không giải thích):\n${essay}\n\nViết lại đoạn văn này bằng tiếng Anh chuẩn, sửa lỗi nếu có.`;
             const translated = await callAI("Bạn là dịch giả chuyên nghiệp, chỉ trả về bản dịch tiếng Anh.", translatePrompt, 800);
             parsed.improvedVersion_en = translated.trim();
         }
-        
         return {
             totalScore: parsed.totalScore || 0,
             grammar: parsed.grammar || 0,
@@ -937,7 +992,6 @@
         });
     }
     
-    // ==================== CHAT SEND ====================
     async function getExpertTeacherResponse(userText, level) {
         const system = `Bạn là giáo viên tiếng Anh chuyên nghiệp. Phản hồi học viên trình độ ${level} (CEFR) bằng tiếng Việt, sửa lỗi chi tiết, giải thích ngữ pháp, cung cấp 3-5 từ vựng nâng cao. Hãy trả lời hữu ích và khích lệ.`;
         return await callAI(system, userText, 1600);
@@ -974,7 +1028,6 @@
         } catch(e) { document.getElementById('typing')?.remove(); addMessage('assistant', `⚠️ Lỗi: ${e.message}`); showToast(e.message, 'error'); }
     }
     
-    // ==================== LEVEL TEST ====================
     let currentQuestions = [], userAnswers = [];
     const QUIZAPI_KEY = 'qa_sk_23a1ee7295fc4041dcf66d84bb21c7f52ac05db6';
     async function fetchRealQuestions() {
@@ -1027,7 +1080,7 @@
         currentQuestions.forEach((q, idx) => {
             const div = document.createElement('div');
             div.className = 'question-item';
-            div.innerHTML = `<div class="question-text">${idx+1}. ${q.text}</div><div class="options" data-qidx="${idx}">${q.options.map(opt => `<label class="option"><input type="radio" name="q${idx}" value="${opt}"> ${opt}</label>`).join('')}</div>`;
+            div.innerHTML = `<div class="question-text" style="margin-bottom:8px; font-weight:500;">${idx+1}. ${q.text}</div><div class="options" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:16px;">${q.options.map(opt => `<label class="option" style="display:flex; align-items:center; gap:6px;"><input type="radio" name="q${idx}" value="${opt}"> ${opt}</label>`).join('')}</div>`;
             container.appendChild(div);
         });
         document.querySelectorAll('.option input').forEach(radio => {
@@ -1054,9 +1107,45 @@
     }
     function closeModal() { document.getElementById('levelTestModal').classList.remove('active'); }
     
-    // ==================== INIT & UTILITIES ====================
-    function toggleTheme() { document.body.classList.toggle('light'); localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark'); }
-    function loadTheme() { if (localStorage.getItem('theme') === 'light') document.body.classList.add('light'); }
+    // ==================== THEME MANAGEMENT (NÂNG CẤP, KHÔNG ẢNH HƯỞNG LOGIC) ====================
+    function applyTheme(themeName) {
+        const body = document.body;
+        body.classList.remove('theme-light', 'theme-sunset', 'theme-ocean', 'theme-forest', 'theme-dark');
+        if (themeName === 'auto') {
+            const hour = new Date().getHours();
+            if (hour >= 6 && hour < 18) {
+                body.classList.add('theme-light');
+            } else {
+                body.classList.add('theme-dark');
+            }
+        } else {
+            if (themeName === 'light') body.classList.add('theme-light');
+            else if (themeName === 'sunset') body.classList.add('theme-sunset');
+            else if (themeName === 'ocean') body.classList.add('theme-ocean');
+            else if (themeName === 'forest') body.classList.add('theme-forest');
+            else if (themeName === 'dark') body.classList.add('theme-dark');
+        }
+        localStorage.setItem('preferred_theme', themeName);
+    }
+
+    function initTheme() {
+        const savedTheme = localStorage.getItem('preferred_theme') || 'dark';
+        const selector = document.getElementById('themeSelector');
+        if (selector) selector.value = savedTheme;
+        applyTheme(savedTheme);
+        selector.addEventListener('change', (e) => {
+            applyTheme(e.target.value);
+            showToast(`🎨 Đã chuyển giao diện: ${e.target.options[e.target.selectedIndex].text}`, 'success');
+        });
+        if (savedTheme === 'auto') {
+            setInterval(() => {
+                if (localStorage.getItem('preferred_theme') === 'auto') {
+                    applyTheme('auto');
+                }
+            }, 3600000);
+        }
+    }
+    
     function updateLevelUI() {
         document.getElementById('cefrLevelDisplay').innerText = userLevel;
         const levels = ['A1','A2','B1','B2','C1','C2'];
@@ -1072,14 +1161,12 @@
         updateLevelUI();
         loadChatHistory();
         initFlashcardData();
-        loadTheme();
+        initTheme();
     }
     loadData();
     
-    // EVENT LISTENERS
     document.getElementById('sendBtn').addEventListener('click', sendMessage);
     document.getElementById('clearChat').addEventListener('click', clearChatHistory);
-    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
     document.getElementById('scoreEssayBtn').addEventListener('click', handleEssayScore);
     document.getElementById('levelTestBtn').addEventListener('click', showLevelTestModal);
     document.getElementById('speakInputBtn').addEventListener('click', () => { let txt = document.getElementById('userInput').value; if(txt) speakText(txt); });
